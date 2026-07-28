@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Smart Campus{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    .dashboard-card .card-header {
+        font-weight: 700;
+        padding: 16px 20px;
+        border: none;
+    }
+    .dashboard-card .card-body {
+        padding: 20px;
+    }
+    .dashboard-card .card-footer {
+        background: transparent;
+        border-top: 1px solid #f0f0f0;
+        padding: 12px 20px;
+    }
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+    }
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .bg-soft-primary { background: #e8ecf8; color: #4a6cf7; }
+    .bg-soft-success { background: #e6f7ed; color: #28a745; }
+    .bg-soft-warning { background: #fef3e2; color: #ff9f43; }
+    .bg-soft-info { background: #e3f2fd; color: #17a2b8; }
+    .bg-soft-danger { background: #fde8e8; color: #dc3545; }
+    
+    .quick-action-btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        background: white;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .quick-action-btn:hover {
+        background: #f8f9fa;
+        border-color: #4a6cf7;
+        transform: translateX(5px);
+    }
+    .quick-action-btn i {
+        margin-right: 8px;
+        color: #4a6cf7;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        border: 1px solid #f0f0f0;
+        text-align: center;
+    }
+    .stat-card .number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1a1a2e;
+    }
+    .stat-card .label {
+        font-size: 0.85rem;
+        color: #6c6c8a;
+    }
+    
+    .role-card {
+        border-left: 4px solid;
+        transition: all 0.3s ease;
+    }
+    .role-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+    .role-card .role-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid px-4 py-4">
+    <!-- Welcome Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">👋 Welcome, <span class="text-primary">{{ admin_name }}</span>!</h3>
+            <p class="text-muted mb-0">You are logged in as <strong>Admin</strong>. Manage all users from here.</p>
+        </div>
+        <div>
+            <span class="badge bg-primary p-2 px-3 rounded-pill">
+                <i class="fas fa-shield-alt"></i> Admin Panel
+            </span>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="number">0</div>
+            <div class="label">👨‍🎓 Total Students</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">0</div>
+            <div class="label">👨‍🏫 Total Faculty</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">0</div>
+            <div class="label">👔 Total TPO</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">0</div>
+            <div class="label">📚 Total HOD</div>
+        </div>
+    </div>
+
+    <!-- Role Management Cards -->
+    <div class="row g-4">
+        <!-- Students -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card role-card" style="border-left-color: #4a6cf7;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="role-icon" style="background: #4a6cf7;">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h5 class="mb-0 ms-3 fw-bold">Students</h5>
+                    </div>
+                    <p class="text-muted small">Manage all student records</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="#" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-list"></i> View All
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <small class="text-muted">Total: 0 students</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Faculty -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card role-card" style="border-left-color: #28a745;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="role-icon" style="background: #28a745;">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h5 class="mb-0 ms-3 fw-bold">Faculty</h5>
+                    </div>
+                    <p class="text-muted small">Manage faculty members</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="#" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
+                        <a href="#" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-list"></i> View All
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <small class="text-muted">Total: 0 faculty</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- HOD -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card role-card" style="border-left-color: #ff9f43;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="role-icon" style="background: #ff9f43;">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h5 class="mb-0 ms-3 fw-bold">HOD</h5>
+                    </div>
+                    <p class="text-muted small">Manage Heads of Departments</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="#" class="btn btn-warning btn-sm text-white">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
+                        <a href="#" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-list"></i> View All
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <small class="text-muted">Total: 0 HOD</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- TPO -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card role-card" style="border-left-color: #17a2b8;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="role-icon" style="background: #17a2b8;">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h5 class="mb-0 ms-3 fw-bold">TPO</h5>
+                    </div>
+                    <p class="text-muted small">Manage Training & Placement Officers</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="#" class="btn btn-info btn-sm text-white">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
+                        <a href="#" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-list"></i> View All
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <small class="text-muted">Total: 0 TPO</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions & Recent Activity -->
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-bolt text-warning"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="#" class="quick-action-btn"><i class="fas fa-user-plus"></i> Add New Student</a>
+                        <a href="#" class="quick-action-btn"><i class="fas fa-user-tie"></i> Add New Faculty</a>
+                        <a href="#" class="quick-action-btn"><i class="fas fa-user-cog"></i> Add New HOD</a>
+                        <a href="#" class="quick-action-btn"><i class="fas fa-briefcase"></i> Add New TPO</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-clock text-info"></i> Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2 d-block opacity-25"></i>
+                        <p>No recent activities</p>
+                        <small>Activities will appear here once you start adding users.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

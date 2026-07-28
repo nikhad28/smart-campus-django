@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard - AIKTC Campus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-primary: #004d40;
+            --green-light: #00695c;
+            --green-dark: #00332a;
+            --green-gold: #ffd93d;
+            --white: #ffffff;
+            --cream: #f5f0eb;
+            --shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+            --shadow-hover: 0 16px 48px rgba(0, 77, 64, 0.2);
+            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f0eb;
+            min-height: 100vh;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: var(--green-dark) !important;
+            padding: 12px 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 999;
+        }
+
+        .navbar-custom .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white !important;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-custom .navbar-brand i {
+            color: var(--green-gold);
+            margin-right: 8px;
+        }
+
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .navbar-custom .nav-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white !important;
+        }
+
+        .btn-logout-nav {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            padding: 6px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .btn-logout-nav:hover {
+            background: #ff6b6b;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .dashboard-main {
+            padding-top: 100px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+
+        /* ===== WELCOME CARD ===== */
+        .welcome-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 36px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 77, 64, 0.06);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #004d40, #00897b, #004d40);
+        }
+
+        .welcome-card .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #004d40, #00897b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 77, 64, 0.2);
+        }
+
+        .welcome-card .user-details {
+            color: #6c6c8a;
+            font-size: 0.95rem;
+        }
+
+        .welcome-card .user-details i {
+            color: #004d40;
+            width: 24px;
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px 24px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 77, 64, 0.06);
+            box-shadow: var(--shadow);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--green-primary);
+        }
+
+        .stat-card .icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stat-card .icon.green {
+            background: linear-gradient(135deg, #004d40, #00897b);
+        }
+
+        .stat-card .icon.gold {
+            background: linear-gradient(135deg, #ffd93d, #f6b93b);
+            color: #00332a;
+        }
+
+        .stat-card .icon.blue {
+            background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+        }
+
+        .stat-card .icon.pink {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+        }
+
+        .stat-card h5 {
+            font-weight: 700;
+            color: #00332a;
+            margin-bottom: 4px;
+        }
+
+        .stat-card p {
+            color: #6c6c8a;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #004d40;
+            display: block;
+            margin-top: 8px;
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .welcome-card {
+                padding: 24px 20px;
+                text-align: center;
+            }
+            .welcome-card .avatar {
+                margin: 0 auto 12px;
+            }
+            .stat-card {
+                padding: 20px 16px;
+            }
+            .stat-card .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-main {
+                padding-top: 80px;
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .welcome-card {
+                padding: 20px 16px;
+            }
+            .welcome-card h2 {
+                font-size: 1.4rem;
+            }
+            .stat-card .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fas fa-university"></i> AIKTC Campus
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-white-50" style="font-size:0.9rem;">
+                    <i class="fas fa-user-graduate"></i> Student
+                </span>
+                <a href="{% url 'student_logout' %}" class="btn-logout-nav">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard-main">
+        <div class="container">
+
+            <!-- Welcome Card -->
+            <div class="welcome-card">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-4">
+                            <div class="avatar">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div>
+                                <h2 class="fw-bold mb-0" style="color:#00332a;">
+                                    Welcome, <span style="color:#004d40;">{{ student_name }}</span>! 🎉
+                                </h2>
+                                <div class="user-details mt-2">
+                                    <div><i class="fas fa-whatsapp"></i> {{ whatsapp_no }}</div>
+                                    <div><i class="fas fa-id-card"></i> Student ID: {{ student_id|default:"N/A" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <span class="badge" style="background:#004d40; color:white; padding:8px 20px; border-radius:50px; font-size:0.85rem;">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="row g-4">
+                <!-- My Courses -->
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="icon blue">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h5>My Courses</h5>
+                        <p>View enrolled courses</p>
+                        <span class="stat-number">6</span>
+                    </div>
+                </div>
+
+                <!-- Attendance -->
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="icon green">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h5>Attendance</h5>
+                        <p>Current attendance</p>
+                        <span class="stat-number">85%</span>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="icon gold">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h5>Results</h5>
+                        <p>View grades &amp; CGPA</p>
+                        <span class="stat-number">8.2</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4 mt-3">
+                <div class="col-md-6">
+                    <div class="stat-card" style="border-left: 4px solid #004d40; text-align:left; padding:20px 24px;">
+                        <h5><i class="fas fa-calendar-check" style="color:#004d40;"></i> Upcoming Events</h5>
+                        <p style="font-size:0.9rem; color:#6c6c8a; margin-top:8px;">
+                            <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Bonhomie 2026 — Dec 15<br>
+                            <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Algorithm Hackathon — Jan 10
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stat-card" style="border-left: 4px solid #ffd93d; text-align:left; padding:20px 24px;">
+                        <h5><i class="fas fa-bullhorn" style="color:#ffd93d;"></i> Notifications</h5>
+                        <p style="font-size:0.9rem; color:#6c6c8a; margin-top:8px;">
+                            <i class="fas fa-circle" style="color:#ffd93d; font-size:0.5rem;"></i> Exam schedule released<br>
+                            <i class="fas fa-circle" style="color:#ffd93d; font-size:0.5rem;"></i> Placement drive on Jan 20
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

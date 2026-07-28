@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Smart Campus{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            min-height: 100vh;
+        }
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+            padding: 14px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #4a6cf7;
+        }
+        .navbar-custom .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .navbar-custom .navbar-brand i {
+            color: #4a6cf7;
+            margin-right: 8px;
+        }
+        .navbar-custom .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .navbar-custom .nav-link:hover {
+            color: white !important;
+            background: rgba(74, 108, 247, 0.3);
+        }
+        .navbar-custom .nav-link.active {
+            color: white !important;
+            background: rgba(74, 108, 247, 0.4);
+        }
+        .navbar-custom .dropdown-menu {
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar-custom .dropdown-item {
+            color: rgba(255,255,255,0.8);
+        }
+        .navbar-custom .dropdown-item:hover {
+            background: rgba(74, 108, 247, 0.2);
+            color: white;
+        }
+        .navbar-custom .btn-logout {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            padding: 6px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .navbar-custom .btn-logout:hover {
+            background: #ff6b6b;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
+        }
+        .user-badge i {
+            font-size: 1.2rem;
+            color: #4a6cf7;
+        }
+        /* ===== ALERTS ===== */
+        .alert-custom {
+            border-radius: 12px;
+            padding: 14px 20px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .alert-success {
+            background: #e6f7ed;
+            color: #1a7a3a;
+            border-left: 4px solid #28a745;
+        }
+        .alert-error {
+            background: #fde8e8;
+            color: #a93226;
+            border-left: 4px solid #dc3545;
+        }
+        .alert-info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-left: 4px solid #17a2b8;
+        }
+        /* ===== MAIN ===== */
+        .main-container {
+            padding: 24px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar-custom .navbar-brand {
+                font-size: 1.2rem;
+            }
+            .user-badge {
+                font-size: 0.85rem;
+            }
+            .main-container {
+                padding: 16px 12px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'admin_dashboard' %}">
+                <i class="fas fa-university"></i> Smart Campus
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <!-- Admin Badge -->
+                    <li class="nav-item">
+                        <span class="user-badge">
+                            <i class="fas fa-user-shield"></i>
+                            <span id="adminName">Admin</span>
+                        </span>
+                    </li>
+                    <!-- Dashboard -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'admin_dashboard' %}">
+                            <i class="fas fa-th-large"></i> Dashboard
+                        </a>
+                    </li>
+                    <!-- Users Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-users"></i> Users
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-graduate"></i> Students</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-tie"></i> HOD</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-briefcase"></i> TPO</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-plus"></i> Add New</a></li>
+                        </ul>
+                    </li>
+                    <!-- Logout -->
+                    <li class="nav-item">
+                        <a href="{% url 'admin_logout' %}" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MESSAGES ===== -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-custom alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="main-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="text-center py-3 mt-4" style="border-top: 1px solid #e9ecef; color: #6c6c8a; font-size: 0.85rem;">
+        <div class="container">
+            <i class="fas fa-heart text-danger"></i> Smart Campus Management System
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update admin name from session or context
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameEl = document.getElementById('adminName');
+            if (nameEl) {
+                // Try to get from context variable
+                const adminUser = '{{ admin_name|default:"Admin" }}';
+                if (adminUser && adminUser !== '') {
+                    nameEl.textContent = adminUser;
+                }
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
