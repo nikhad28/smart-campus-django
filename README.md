@@ -1,307 +1,348 @@
-# 🎓 Campus AI Backend
+```md
+# 🏫 Smart Campus Management System
 
-A Smart Campus Management System Backend built using **Node.js**, **Express.js**, and **PostgreSQL**.
-
----
-
-# 📌 Project Overview
-
-Campus AI is an AI-powered Campus Management System that provides:
-
-- 📚 Student Management
-- 👨‍🏫 Faculty Management
-- 📅 Biometric Attendance
-- 📝 Marks Management
-- 🤖 WhatsApp Chatbot
-- 🧠 AI Career Recommendation
-- 🔐 JWT Authentication
-
-Students **do not have a web portal**.
-Students interact only through the **WhatsApp Chatbot**.
-
-Admin users include:
-- Admin
-- Faculty
-- HOD
-- Director
+A complete campus management system for **AIKTC (Anjuman-I-Islam's Kalsekar Technical Campus)** built with **Django**, **Supabase**, and **Bootstrap**.
 
 ---
 
-# 🛠️ Tech Stack
+## 📌 Project Overview
 
-Backend
-- Node.js
-- Express.js
+Smart Campus is a role-based platform for managing:
 
-Database
-- PostgreSQL
-
-Authentication
-- JWT
-- bcrypt
-
-API Testing
-- Postman
-
-Version Control
-- Git
-- GitHub
-
-Future Integration
-- WhatsApp Cloud API
-- Face Recognition (Biometric Attendance)
-- Machine Learning
+- 👨‍🎓 Students
+- 👨‍🏫 Faculty
+- 👔 HOD
+- 💼 TPO (Training & Placement Officer)
+- 👨‍💼 Admin
+- 👨‍👩‍👦 Parents
 
 ---
 
-# 📁 Project Structure
+## 🛠️ Tech Stack
+
+### Backend
+- Django 5.0
+- Supabase (PostgreSQL)
+- Django REST Framework
+
+### Frontend
+- HTML5
+- CSS3
+- Bootstrap 5
+- JavaScript
+- AOS (Animations)
+
+### Authentication
+- Session-based (Admin)
+- OTP-based (Students)
+- Password-based (TPO)
+
+---
+
+## ✨ Features
+
+### 🔐 Authentication
+- Admin Login (user_id + password)
+- Student Login (WhatsApp number + OTP)
+- TPO Login (user_id + password)
+
+### 👨‍🎓 Student Module
+- View courses
+- Check attendance
+- View results
+
+### 💼 TPO Module
+- Manage companies
+- Track placements
+- View applications
+
+### 🏫 Admin Module
+- Manage all users
+- Add/Edit/Delete students, faculty, HOD, TPO
+- Department management
+
+### 🎨 UI Features
+- Bottle Green + White Theme
+- Glassmorphism cards
+- 3D hover effects
+- Floating animations
+- Fully responsive
+
+### 📱 Pages
+- Index Landing Page
+- Admin Login & Dashboard
+- Student Login & Dashboard
+- TPO Login & Dashboard
+- Role-based dashboards
+
+---
+
+## 📁 Project Structure
 
 ```
-campus-ai-backend
+smart-campus-django/
 │
-├── src
-│   ├── config
-│   │   └── db.js
-│   │
-│   ├── controllers
-│   │   ├── authController.js
-│   │   └── studentController.js
-│   │
-│   ├── middleware
-│   │   └── authMiddleware.js
-│   │
-│   ├── routes
-│   │   ├── authRoutes.js
-│   │   └── studentRoutes.js
-│   │
-│   ├── services
-│   ├── models
-│   ├── validators
-│   ├── utils
-│   └── app.js
-│
-├── server.js
-├── package.json
+├── manage.py
+├── requirements.txt
+├── .env
 ├── .gitignore
-└── README.md
+│
+├── config/
+│   ├── settings.py
+│   └── urls.py
+│
+├── core/
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   └── supabase_client.py
+│
+├── otp_app/
+│   ├── models.py
+│   └── views.py
+│
+├── templates/
+│   ├── base.html
+│   ├── index.html
+│   ├── admin_login.html
+│   ├── admin_dashboard.html
+│   ├── student_login.html
+│   ├── student_verify_otp.html
+│   ├── student_dashboard.html
+│   ├── tpo_login.html
+│   └── tpo_dashboard.html
+│
+├── static/
+│   ├── css/
+│   └── js/
+│
+└── media/
 ```
 
 ---
 
-# 🚀 Installation
+## 🚀 Installation
 
-## 1. Clone Repository
+### 1. Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/campus-ai-backend.git
+git clone https://github.com/YOUR_USERNAME/smart-campus-django.git
+cd smart-campus-django
 ```
 
----
-
-## 2. Open Project
+### 2. Create Virtual Environment
 
 ```bash
-cd campus-ai-backend
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
 ```
 
----
-
-## 3. Install Packages
+### 3. Install Dependencies
 
 ```bash
-npm install
+pip install -r requirements.txt
 ```
 
----
-
-## 4. Create .env File
-
-Create a file named `.env`
-
-Example:
+### 4. Create `.env` File
 
 ```env
-PORT=5000
+SECRET_KEY=your-django-secret-key
+DEBUG=True
 
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=campus_ai
-DB_USER=postgres
-DB_PASSWORD=YOUR_PASSWORD
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-supabase-anon-key
 
-JWT_SECRET=YOUR_SECRET_KEY
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
 ```
 
----
-
-## 5. Start Server
+### 5. Run Migrations
 
 ```bash
-npm run dev
+python manage.py makemigrations
+python manage.py migrate
 ```
 
-Server:
-
-```
-http://localhost:5000
-```
-
----
-
-# 📦 APIs Implemented
-
-## Authentication
-
-| Method | Endpoint |
-|---------|----------|
-| POST | /api/auth/login |
-
----
-
-## Students
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/students |
-| GET | /api/students/:id |
-| POST | /api/students |
-| PUT | /api/students/:id |
-| DELETE | /api/students/:id |
-
----
-
-# 🗄️ Database
-
-Current Schemas
-
-- academic
-- attendance
-- marks
-- chatbot
-- ai
-- auth
-
----
-
-# 📅 Development Roadmap
-
-## ✅ Phase 1
-
-- PostgreSQL Setup
-- Express Setup
-- Student CRUD
-- Authentication
-
----
-
-## 🚧 Phase 2
-
-- Faculty CRUD
-- Subject CRUD
-
----
-
-## 🚧 Phase 3
-
-Attendance Module
-
-- Face Recognition Attendance
-- Attendance Reports
-- Parent Notification
-
----
-
-## 🚧 Phase 4
-
-Marks Management
-
-- Add Marks
-- Update Marks
-- Result Generation
-- SGPA
-- CGPA
-
----
-
-## 🚧 Phase 5
-
-Dashboard
-
-- Faculty Dashboard
-- HOD Dashboard
-- Director Dashboard
-
----
-
-## 🚧 Phase 6
-
-WhatsApp Chatbot
-
-Student can ask:
-
-- My attendance
-- My marks
-- My result
-- Notices
-- Timetable
-
----
-
-## 🚧 Phase 7
-
-AI Career Recommendation
-
-Input:
-
-- Semester 1–6 Marks
-- Attendance
-- Performance
-
-Output:
-
-- Software Development
-- Data Science
-- AI/ML
-- Cyber Security
-- Cloud Computing
-- Networking
-
----
-
-# 👥 Team Members
-
-| Name | Responsibility |
-|------|----------------|
-| Member 1 | Authentication & Student Module |
-| Member 2 | Faculty & Subject Module |
-| Member 3 | Attendance Module |
-| Member 4 | Marks, AI & WhatsApp Chatbot |
-
----
-
-# ⚠️ Important
-
-Do NOT upload:
-
-- `.env`
-- `node_modules`
-
-Before pushing:
+### 6. Create Superuser
 
 ```bash
-git status
+python manage.py createsuperuser
 ```
 
-If everything looks correct:
+### 7. Start Server
 
 ```bash
-git add .
-git commit -m "Your commit message"
-git push
+python manage.py runserver
+```
+
+Server will run at:
+
+```
+http://localhost:8000
 ```
 
 ---
 
-# 📄 License
+## 📦 Supabase Tables
 
-This project is developed as a Final Year Engineering Major Project.
+### `user_account`
+- user_id (UUID, PK)
+- username (VARCHAR, UNIQUE)
+- password_hash (VARCHAR)
+- faculty_id (VARCHAR)
+- role_id (INTEGER)
+- is_active (BOOLEAN)
+
+### `student`
+- student_id (UUID, PK)
+- roll_no (VARCHAR)
+- full_name (VARCHAR)
+- gender (VARCHAR)
+- dob (DATE)
+- whatsapp_no (VARCHAR)
+- admission_year (INTEGER)
+- department_id (VARCHAR)
+- semester_id (INTEGER)
+- division_id (VARCHAR)
+
+### `tpo`
+- tpo_id (UUID, PK)
+- user_id (VARCHAR, UNIQUE)
+- password_hash (VARCHAR)
+- full_name (VARCHAR)
+- email (VARCHAR, UNIQUE)
+- phone (VARCHAR)
+- department (VARCHAR)
+- is_active (BOOLEAN)
+
+---
+
+## 📋 Login Credentials
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | admin | admin123 |
+| Student | WhatsApp Number | OTP (console) |
+| TPO | tpo_user | tpo12345 |
+
+---
+
+## 🗺️ URL Routes
+
+| URL | Page |
+|-----|------|
+| `/` | Index Landing Page |
+| `/admin-login/` | Admin Login |
+| `/admin-dashboard/` | Admin Dashboard |
+| `/student-login/` | Student Login |
+| `/student-verify-otp/` | Verify OTP |
+| `/student-dashboard/` | Student Dashboard |
+| `/tpo-login/` | TPO Login |
+| `/tpo-dashboard/` | TPO Dashboard |
+
+---
+
+## 📸 Screenshots
+
+### Index Page
+- Hero section with college badge
+- Features cards with 3D hover
+- Events & Activities section
+- Departments section
+- Role selection cards
+
+### Admin Dashboard
+- User management
+- Department management
+- Quick actions
+
+### Student Dashboard
+- View courses
+- Check attendance
+- View results
+
+### TPO Dashboard
+- Company management
+- Placement tracking
+- Application management
+
+---
+
+## 🎨 Theme Colors
+
+| Color Name | Hex Code |
+|------------|----------|
+| Bottle Green | `#004d40` |
+| Light Green | `#00695c` |
+| Dark Green | `#00332a` |
+| Gold Accent | `#ffd93d` |
+| White | `#ffffff` |
+| Cream | `#f5f0eb` |
+
+---
+
+## 📅 Development Roadmap
+
+### ✅ Completed
+- Admin Login & Dashboard
+- Student Login (OTP-based)
+- TPO Login & Dashboard
+- Index Landing Page
+- Features & Events Section
+- Departments Section
+- Supabase Integration
+
+### 🚧 In Progress
+- Faculty Module
+- HOD Module
+- Parents Module
+
+### 📝 Future Plans
+- Attendance System
+- Marks Management
+- Placement Module
+- AI Chatbot
+- WhatsApp Integration
+
+---
+
+---
+
+## ⚠️ Important Notes
+
+1. **OTP is printed on console** — actual SMS/WhatsApp integration pending
+2. **Supabase is used as database** — PostgreSQL on cloud
+3. **No production deployment yet** — development only
+
+---
+
+## 📄 License
+
+This project is developed for educational purposes.
+
+---
+
+## 📞 Contact
+
+- **Developer:** Nikhad Shaikh , Insha Shakeel , Munira Lmbuwale , Iqra Shaikh
+- **College:** AIKTC (Anjuman-I-Islam's Kalsekar Technical Campus)
+
+---
+---
+
+## 📁 `requirements.txt`
+
+Django==5.0.6
+djangorestframework==3.15.1
+django-cors-headers==4.3.1
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
+supabase==2.5.1
+bcrypt==4.1.2
+Pillow==10.3.0
+django-filter==24.2
