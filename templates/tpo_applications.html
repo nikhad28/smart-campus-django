@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h4><i class="fas fa-users"></i> Student Applications</h4>
+    <div class="table-responsive mt-3">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Job</th>
+                    <th>Company</th>
+                    <th>Resume</th>
+                    <th>Status</th>
+                    <th>Applied On</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td><strong>{{ app.student_name }}</strong></td>
+                    <td>{{ app.student_email }}</td>
+                    <td>{{ app.student_phone }}</td>
+                    <td>{{ app.job_title|default:"-" }}</td>
+                    <td>{{ app.company_name|default:"-" }}</td>
+                    <td>
+                        {% if app.resume_url %}
+                            <a href="{{ app.resume_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-file-pdf"></i> View
+                            </a>
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge {% if app.status == 'applied' %}bg-info{% elif app.status == 'shortlisted' %}bg-warning{% elif app.status == 'selected' %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ app.status|title }}
+                        </span>
+                    </td>
+                    <td>{{ app.applied_at|slice:":10" }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'tpo_update_application' %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="app_id" value="{{ app.id }}">
+                            <select name="status" class="form-select form-select-sm d-inline-block" style="width:auto; display:inline-block;" onchange="this.form.submit()">
+                                <option value="applied" {% if app.status == 'applied' %}selected{% endif %}>Applied</option>
+                                <option value="shortlisted" {% if app.status == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
+                                <option value="selected" {% if app.status == 'selected' %}selected{% endif %}>Selected</option>
+                                <option value="rejected" {% if app.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted">No applications yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

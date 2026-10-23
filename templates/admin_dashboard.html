@@ -1,106 +1,228 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Admin Dashboard - Smart Campus{% endblock %}
+{% block title %}Admin Dashboard - AIKTC{% endblock %}
 
 {% block content %}
 <style>
-    .dashboard-card {
+    /* ============================================
+       ADMIN DASHBOARD STYLES - INDEX THEME MATCH
+       ============================================ */
+    :root {
+        --green-primary: #004d40;
+        --green-light: #00695c;
+        --green-dark: #00332a;
+        --green-gold: #ffd93d;
+        --white: #ffffff;
+        --cream: #f5f0eb;
+        --shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+        --shadow-hover: 0 16px 48px rgba(0, 77, 64, 0.2);
+        --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .sidebar-admin {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 72px);
+        background: white;
+        border-right: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 20px 16px;
+        overflow-y: auto;
         transition: all 0.3s ease;
-        border: none;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
-    .dashboard-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    }
-    .dashboard-card .card-header {
+
+    .sidebar-admin::-webkit-scrollbar { width: 4px; }
+    .sidebar-admin::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 10px; }
+
+    .sidebar-admin .sidebar-brand {
         font-weight: 700;
-        padding: 16px 20px;
-        border: none;
+        color: var(--green-dark);
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+        font-size: 1.1rem;
     }
-    .dashboard-card .card-body {
-        padding: 20px;
+    .sidebar-admin .sidebar-brand i {
+        color: var(--green-primary);
+        margin-right: 8px;
     }
-    .dashboard-card .card-footer {
-        background: transparent;
-        border-top: 1px solid #f0f0f0;
-        padding: 12px 20px;
-    }
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 800;
-    }
-    .icon-circle {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
+
+    .sidebar-admin .nav-item {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: white;
-    }
-    .bg-soft-primary { background: #e8ecf8; color: #4a6cf7; }
-    .bg-soft-success { background: #e6f7ed; color: #28a745; }
-    .bg-soft-warning { background: #fef3e2; color: #ff9f43; }
-    .bg-soft-info { background: #e3f2fd; color: #17a2b8; }
-    .bg-soft-danger { background: #fde8e8; color: #dc3545; }
-    
-    .quick-action-btn {
-        width: 100%;
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
-        background: white;
-        transition: all 0.3s ease;
-        font-weight: 600;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #4a4a6a;
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
         font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 2px;
     }
-    .quick-action-btn:hover {
-        background: #f8f9fa;
-        border-color: #4a6cf7;
-        transform: translateX(5px);
+
+    .sidebar-admin .nav-item:hover {
+        background: rgba(0, 77, 64, 0.06);
+        color: var(--green-primary);
     }
-    .quick-action-btn i {
-        margin-right: 8px;
-        color: #4a6cf7;
+
+    .sidebar-admin .nav-item.active {
+        background: rgba(0, 77, 64, 0.08);
+        color: var(--green-primary);
+        border-left: 3px solid var(--green-primary);
     }
-    
-    .stats-grid {
+
+    .sidebar-admin .nav-item i {
+        width: 22px;
+        color: var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item .badge-count {
+        margin-left: auto;
+        background: var(--green-primary);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+    }
+
+    .sidebar-admin .nav-item .badge-red {
+        background: #dc3545;
+    }
+
+    .sidebar-toggle-admin {
+        display: none;
+        background: none;
+        border: none;
+        color: #004d40;
+        font-size: 1.5rem;
+        cursor: pointer;
+        position: fixed;
+        top: 80px;
+        left: 10px;
+        z-index: 101;
+    }
+
+    .main-content-admin {
+        margin-left: 260px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 100vh;
+    }
+
+    .stats-grid-admin {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 16px;
         margin-bottom: 24px;
     }
-    .stat-card {
+
+    .stat-card-admin {
         background: white;
         padding: 20px;
         border-radius: 16px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-        border: 1px solid #f0f0f0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 77, 64, 0.06);
         text-align: center;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
     }
-    .stat-card .number {
+
+    .stat-card-admin::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--green-primary), var(--green-gold));
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .stat-card-admin:hover::after {
+        transform: scaleX(1);
+    }
+
+    .stat-card-admin:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .stat-card-admin .number {
         font-size: 2.2rem;
         font-weight: 800;
         color: #1a1a2e;
+        letter-spacing: -1px;
     }
-    .stat-card .label {
+
+    .stat-card-admin .label {
         font-size: 0.85rem;
         color: #6c6c8a;
+        font-weight: 500;
     }
-    
+
+    .stat-card-admin .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 6px;
+    }
+
+    .stat-card-admin .stat-icon.green { color: var(--green-primary); }
+    .stat-card-admin .stat-icon.blue { color: #4a6cf7; }
+    .stat-card-admin .stat-icon.gold { color: var(--green-gold); }
+    .stat-card-admin .stat-icon.pink { color: #fd79a8; }
+    .stat-card-admin .stat-icon.orange { color: #ff9f43; }
+    .stat-card-admin .stat-icon.purple { color: #6c5ce7; }
+
+    .dashboard-card {
+        transition: var(--transition);
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        background: white;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .dashboard-card .card-header {
+        font-weight: 700;
+        padding: 16px 20px;
+        border: none;
+        background: transparent;
+    }
+
+    .dashboard-card .card-body {
+        padding: 20px;
+    }
+
+    .dashboard-card .card-footer {
+        background: transparent;
+        border-top: 1px solid rgba(0, 77, 64, 0.04);
+        padding: 12px 20px;
+    }
+
     .role-card {
         border-left: 4px solid;
-        transition: all 0.3s ease;
+        transition: var(--transition);
     }
+
     .role-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
     }
+
     .role-card .role-icon {
         width: 44px;
         height: 44px;
@@ -110,46 +232,240 @@
         justify-content: center;
         font-size: 1.2rem;
         color: white;
+        flex-shrink: 0;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 280px;
+        width: 100%;
+    }
+
+    .chart-card {
+        transition: var(--transition);
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        background: white;
+        height: 100%;
+    }
+
+    .chart-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .chart-card .card-header {
+        font-weight: 700;
+        padding: 16px 20px;
+        border: none;
+        background: transparent;
+    }
+
+    .chart-card .card-body {
+        padding: 20px;
+    }
+
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: var(--shadow-hover);
+    }
+    .modal-header {
+        border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 20px 24px;
+    }
+    .modal-header .modal-title {
+        font-weight: 700;
+        color: var(--green-dark);
+    }
+    .modal-body {
+        padding: 24px;
+    }
+    .modal-footer {
+        border-top: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 16px 24px;
+    }
+    .form-control {
+        border-radius: 12px;
+        padding: 12px 16px;
+        border: 1px solid #e0e0e0;
+        transition: var(--transition);
+    }
+    .form-control:focus {
+        border-color: var(--green-primary);
+        box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.08);
+    }
+    .form-label {
+        font-weight: 600;
+        color: var(--green-dark);
+    }
+    .btn-submit-modal {
+        background: var(--green-primary);
+        color: white;
+        border: none;
+        padding: 10px 28px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+    .btn-submit-modal:hover {
+        background: var(--green-light);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 77, 64, 0.25);
+        color: white;
+    }
+    .btn-cancel-modal {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 10px 28px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+    .btn-cancel-modal:hover {
+        background: #c0392b;
+        color: white;
+    }
+
+    @media (max-width: 992px) {
+        .sidebar-admin {
+            transform: translateX(-100%);
+            top: 70px;
+            height: calc(100vh - 70px);
+        }
+        .sidebar-admin.open {
+            transform: translateX(0);
+        }
+        .sidebar-toggle-admin {
+            display: block;
+        }
+        .main-content-admin {
+            margin-left: 0;
+            padding: 16px;
+            padding-top: 60px;
+        }
+        .chart-container {
+            height: 220px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .sidebar-admin {
+            width: 220px;
+        }
+        .stats-grid-admin {
+            grid-template-columns: 1fr 1fr;
+        }
+        .stat-card-admin .number {
+            font-size: 1.6rem;
+        }
+        .chart-container {
+            height: 180px;
+        }
     }
 </style>
 
-<div class="container-fluid px-4 py-4">
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle-admin" onclick="toggleSidebarAdmin()">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar-admin" id="sidebarAdmin">
+    <div class="sidebar-brand">
+        <i class="fas fa-th-large"></i> Menu
+    </div>
+    <a href="/admin-dashboard/" class="nav-item active">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="/admin-users/" class="nav-item">
+        <i class="fas fa-users"></i> Users
+        <span class="badge-count">4</span>
+    </a>
+    <a href="/admin-students/" class="nav-item">
+        <i class="fas fa-user-graduate"></i> Students
+        <span class="badge-count">{{ total_students|default:0 }}</span>
+    </a>
+    <a href="/admin-faculty/" class="nav-item">
+        <i class="fas fa-chalkboard-teacher"></i> Faculty
+        <span class="badge-count">{{ total_faculty|default:0 }}</span>
+    </a>
+    <a href="/admin-tpo/" class="nav-item">
+        <i class="fas fa-briefcase"></i> TPO
+        <span class="badge-count">{{ total_tpo|default:0 }}</span>
+    </a>
+    <a href="/admin-hod/" class="nav-item">
+        <i class="fas fa-user-tie"></i> HOD
+        <span class="badge-count">{{ total_hod|default:0 }}</span>
+    </a>
+    <a href="/issues-dashboard/" class="nav-item" style="border-left: 3px solid #dc3545; background: rgba(220, 53, 69, 0.05);">
+        <i class="fas fa-tools" style="color:#dc3545;"></i> All Issues
+        <span class="badge-count badge-red">{{ pending_count|default:0 }}</span>
+    </a>
+    <a href="/admin-reports/" class="nav-item">
+        <i class="fas fa-chart-bar"></i> Reports
+    </a>
+    <a href="/admin-profile/" class="nav-item">
+        <i class="fas fa-user"></i> Profile
+    </a>
+       <!-- ===== NEW: CAREER RECOMMENDATION NAV ITEM ===== -->
+    <a href="/career-recommendation/" class="nav-item" style="border-left: 3px solid #6c5ce7; background: rgba(108, 92, 231, 0.05);">
+        <i class="fas fa-rocket" style="color:#6c5ce7;"></i> Career Recommendation
+        <span class="badge-count" style="background: #6c5ce7;">New</span>
+    </a>
+    
+    <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+        <a href="/admin-logout/" class="nav-item" style="color:#dc3545;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content-admin" id="mainContentAdmin">
+
     <!-- Welcome Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold mb-1">👋 Welcome, <span class="text-primary">{{ admin_name }}</span>!</h3>
+            <h3 class="fw-bold mb-1">👋 Welcome, <span style="color: var(--green-primary);">{{ admin_name }}</span>!</h3>
             <p class="text-muted mb-0">You are logged in as <strong>Admin</strong>. Manage all users from here.</p>
         </div>
         <div>
-            <span class="badge bg-primary p-2 px-3 rounded-pill">
+            <span class="badge p-2 px-3 rounded-pill" style="background: var(--green-primary); color: white;">
                 <i class="fas fa-shield-alt"></i> Admin Panel
             </span>
         </div>
     </div>
 
-    <!-- Quick Stats -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="number">0</div>
+    <!-- STATS CARDS -->
+    <div class="stats-grid-admin">
+        <div class="stat-card-admin">
+            <div class="stat-icon green"><i class="fas fa-user-graduate"></i></div>
+            <div class="number">{{ total_students|default:0 }}</div>
             <div class="label">👨‍🎓 Total Students</div>
         </div>
-        <div class="stat-card">
-            <div class="number">0</div>
+        <div class="stat-card-admin">
+            <div class="stat-icon blue"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="number">{{ total_faculty|default:0 }}</div>
             <div class="label">👨‍🏫 Total Faculty</div>
         </div>
-        <div class="stat-card">
-            <div class="number">0</div>
+        <div class="stat-card-admin">
+            <div class="stat-icon gold"><i class="fas fa-briefcase"></i></div>
+            <div class="number">{{ total_tpo|default:0 }}</div>
             <div class="label">👔 Total TPO</div>
         </div>
-        <div class="stat-card">
-            <div class="number">0</div>
+        <div class="stat-card-admin">
+            <div class="stat-icon pink"><i class="fas fa-user-tie"></i></div>
+            <div class="number">{{ total_hod|default:0 }}</div>
             <div class="label">📚 Total HOD</div>
         </div>
     </div>
 
-    <!-- Role Management Cards -->
+    <!-- ROLE MANAGEMENT CARDS -->
     <div class="row g-4">
-        <!-- Students -->
         <div class="col-md-6 col-lg-3">
             <div class="card dashboard-card role-card" style="border-left-color: #4a6cf7;">
                 <div class="card-body">
@@ -161,21 +477,20 @@
                     </div>
                     <p class="text-muted small">Manage all student records</p>
                     <div class="d-flex gap-2 flex-wrap">
-                        <a href="#" class="btn btn-primary btn-sm">
+                        <button class="btn btn-sm" style="background: #4a6cf7; color: white;" data-bs-toggle="modal" data-bs-target="#addStudentModal">
                             <i class="fas fa-plus"></i> Add
-                        </a>
-                        <a href="#" class="btn btn-outline-primary btn-sm">
+                        </button>
+                        <a href="/admin-students/" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-list"></i> View All
                         </a>
                     </div>
                 </div>
-                <div class="card-footer bg-transparent">
-                    <small class="text-muted">Total: 0 students</small>
+                <div class="card-footer">
+                    <small class="text-muted">Total: {{ total_students|default:0 }} students</small>
                 </div>
             </div>
         </div>
 
-        <!-- Faculty -->
         <div class="col-md-6 col-lg-3">
             <div class="card dashboard-card role-card" style="border-left-color: #28a745;">
                 <div class="card-body">
@@ -187,47 +502,20 @@
                     </div>
                     <p class="text-muted small">Manage faculty members</p>
                     <div class="d-flex gap-2 flex-wrap">
-                        <a href="#" class="btn btn-success btn-sm">
+                        <button class="btn btn-sm" style="background: #28a745; color: white;" data-bs-toggle="modal" data-bs-target="#addFacultyModal">
                             <i class="fas fa-plus"></i> Add
-                        </a>
-                        <a href="#" class="btn btn-outline-success btn-sm">
+                        </button>
+                        <a href="/admin-faculty/" class="btn btn-sm btn-outline-success">
                             <i class="fas fa-list"></i> View All
                         </a>
                     </div>
                 </div>
-                <div class="card-footer bg-transparent">
-                    <small class="text-muted">Total: 0 faculty</small>
+                <div class="card-footer">
+                    <small class="text-muted">Total: {{ total_faculty|default:0 }} faculty</small>
                 </div>
             </div>
         </div>
 
-        <!-- HOD -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card dashboard-card role-card" style="border-left-color: #ff9f43;">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="role-icon" style="background: #ff9f43;">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                        <h5 class="mb-0 ms-3 fw-bold">HOD</h5>
-                    </div>
-                    <p class="text-muted small">Manage Heads of Departments</p>
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="#" class="btn btn-warning btn-sm text-white">
-                            <i class="fas fa-plus"></i> Add
-                        </a>
-                        <a href="#" class="btn btn-outline-warning btn-sm">
-                            <i class="fas fa-list"></i> View All
-                        </a>
-                    </div>
-                </div>
-                <div class="card-footer bg-transparent">
-                    <small class="text-muted">Total: 0 HOD</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- TPO -->
         <div class="col-md-6 col-lg-3">
             <div class="card dashboard-card role-card" style="border-left-color: #17a2b8;">
                 <div class="card-body">
@@ -239,52 +527,541 @@
                     </div>
                     <p class="text-muted small">Manage Training & Placement Officers</p>
                     <div class="d-flex gap-2 flex-wrap">
-                        <a href="#" class="btn btn-info btn-sm text-white">
+                        <button class="btn btn-sm" style="background: #17a2b8; color: white;" data-bs-toggle="modal" data-bs-target="#addTpoModal">
                             <i class="fas fa-plus"></i> Add
-                        </a>
-                        <a href="#" class="btn btn-outline-info btn-sm">
+                        </button>
+                        <a href="/admin-tpo/" class="btn btn-sm btn-outline-info">
                             <i class="fas fa-list"></i> View All
                         </a>
                     </div>
                 </div>
-                <div class="card-footer bg-transparent">
-                    <small class="text-muted">Total: 0 TPO</small>
+                <div class="card-footer">
+                    <small class="text-muted">Total: {{ total_tpo|default:0 }} TPO</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card dashboard-card role-card" style="border-left-color: #ff9f43;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="role-icon" style="background: #ff9f43;">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h5 class="mb-0 ms-3 fw-bold">HOD</h5>
+                    </div>
+                    <p class="text-muted small">Manage Heads of Departments</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="btn btn-sm" style="background: #ff9f43; color: white;" data-bs-toggle="modal" data-bs-target="#addHodModal">
+                            <i class="fas fa-plus"></i> Add
+                        </button>
+                        <a href="/admin-hod/" class="btn btn-sm btn-outline-warning">
+                            <i class="fas fa-list"></i> View All
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Total: {{ total_hod|default:0 }} HOD</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS SECTION -->
+    <div class="row g-4 mt-3">
+        <div class="col-md-6">
+            <div class="chart-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie" style="color: var(--green-primary);"></i>
+                    <span class="ms-2">User Distribution</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="userDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie" style="color: var(--green-primary);"></i>
+                    <span class="ms-2">Role Distribution</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="roleDistributionChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Quick Actions & Recent Activity -->
     <div class="row g-4 mt-2">
-        <div class="col-md-6">
-            <div class="card dashboard-card">
-                <div class="card-header bg-transparent">
-                    <h5 class="mb-0 fw-bold"><i class="fas fa-bolt text-warning"></i> Quick Actions</h5>
+        <div class="col-md-12">
+            <div class="chart-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line" style="color: var(--green-primary);"></i>
+                    <span class="ms-2">Monthly Registrations</span>
                 </div>
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="#" class="quick-action-btn"><i class="fas fa-user-plus"></i> Add New Student</a>
-                        <a href="#" class="quick-action-btn"><i class="fas fa-user-tie"></i> Add New Faculty</a>
-                        <a href="#" class="quick-action-btn"><i class="fas fa-user-cog"></i> Add New HOD</a>
-                        <a href="#" class="quick-action-btn"><i class="fas fa-briefcase"></i> Add New TPO</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card dashboard-card">
-                <div class="card-header bg-transparent">
-                    <h5 class="mb-0 fw-bold"><i class="fas fa-clock text-info"></i> Recent Activity</h5>
-                </div>
-                <div class="card-body">
-                    <div class="text-center py-4 text-muted">
-                        <i class="fas fa-inbox fa-2x mb-2 d-block opacity-25"></i>
-                        <p>No recent activities</p>
-                        <small>Activities will appear here once you start adding users.</small>
+                    <div class="chart-container" style="height: 280px;">
+                        <canvas id="monthlyGrowthChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- INFRASTRUCTURE SECTION -->
+    <div class="row g-4 mt-3">
+        <div class="col-md-6">
+            <div class="card dashboard-card" style="border-left: 4px solid #dc3545;">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-tools" style="color:#dc3545;"></i> Infrastructure Issues</h5>
+                    <span class="badge" style="background:#dc3545;">{{ pending_count|default:0 }} Pending</span>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">View and manage all reported infrastructure issues.</p>
+                    <a href="/issues-dashboard/" class="btn btn-sm" style="background:#dc3545; color:white;">
+                        <i class="fas fa-arrow-right"></i> Manage Issues
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card dashboard-card" style="border-left: 4px solid #ffc107;">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-chart-bar" style="color:#ffc107;"></i> Issue Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-around text-center">
+                        <div>
+                            <h4 class="text-warning">{{ pending_count|default:0 }}</h4>
+                            <small class="text-muted">🟡 Pending</small>
+                        </div>
+                        <div>
+                            <h4 class="text-primary">{{ in_progress_count|default:0 }}</h4>
+                            <small class="text-muted">🔵 In Progress</small>
+                        </div>
+                        <div>
+                            <h4 class="text-success">{{ resolved_count|default:0 }}</h4>
+                            <small class="text-muted">✅ Resolved</small>
+                        </div>
+                    </div>
+                    <a href="/issues-dashboard/" class="btn btn-sm btn-outline-primary w-100 mt-3">
+                        <i class="fas fa-arrow-right"></i> View All Issues
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+<!-- ============================================ -->
+<!-- ===== MODAL: ADD STUDENT (Updated) ===== -->
+<!-- ============================================ -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-graduate" style="color:var(--green-primary);"></i> Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'admin_add_student' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Student ID <span class="text-danger">*</span></label>
+                            <input type="text" name="student_id" class="form-control" placeholder="e.g. STU2024001" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Roll No <span class="text-danger">*</span></label>
+                            <input type="text" name="roll_no" class="form-control" placeholder="e.g. 2024001" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" name="full_name" class="form-control" placeholder="Enter full name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Gender <span class="text-danger">*</span></label>
+                            <select name="gender" class="form-control" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                            <input type="date" name="dob" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">WhatsApp Number <span class="text-danger">*</span></label>
+                            <input type="text" name="whatsapp_no" class="form-control" placeholder="Enter WhatsApp number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Admission Year <span class="text-danger">*</span></label>
+                            <input type="number" name="admission_year" class="form-control" placeholder="e.g. 2024" min="2000" max="2030" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department ID <span class="text-danger">*</span></label>
+                            <select name="department_id" class="form-control" required>
+                                <option value="">Select Department</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Semester ID <span class="text-danger">*</span></label>
+                            <select name="semester_id" class="form-control" required>
+                                <option value="">Select Semester</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Division ID</label>
+                            <select name="division_id" class="form-control">
+                                <option value="">Select Division</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email (Optional)</label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email address">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Parent ID (Optional)</label>
+                            <input type="text" name="parent_id" class="form-control" placeholder="Enter parent ID">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel-modal" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn-submit-modal">
+                        <i class="fas fa-save"></i> Register Student
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ============================================ -->
+<!-- ===== MODAL: ADD FACULTY (Updated) ===== -->
+<!-- ============================================ -->
+<div class="modal fade" id="addFacultyModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-chalkboard-teacher" style="color:var(--green-primary);"></i> Add New Faculty</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'admin_add_faculty' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Employee ID</label>
+                            <input type="text" name="employee_id" class="form-control" placeholder="Enter employee ID">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" name="full_name" class="form-control" placeholder="Enter full name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email address">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control" placeholder="Enter phone number">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Designation</label>
+                            <input type="text" name="designation" class="form-control" placeholder="e.g. Professor, HOD">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department ID <span class="text-danger">*</span></label>
+                            <select name="department_id" class="form-control" required>
+                                <option value="">Select Department</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel-modal" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn-submit-modal">
+                        <i class="fas fa-save"></i> Register Faculty
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ============================================ -->
+<!-- ===== MODAL: ADD TPO ===== -->
+<!-- ============================================ -->
+<div class="modal fade" id="addTpoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-briefcase" style="color:var(--green-primary);"></i> Add New TPO Officer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'admin_add_tpo' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">User ID <span class="text-danger">*</span></label>
+                            <input type="text" name="user_id" class="form-control" placeholder="Enter user ID" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" name="full_name" class="form-control" placeholder="Enter full name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email address" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone <span class="text-danger">*</span></label>
+                            <input type="text" name="phone" class="form-control" placeholder="Enter phone number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <input type="text" name="department" class="form-control" placeholder="Enter department name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="password_hash" class="form-control" placeholder="Enter password" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select name="is_active" class="form-control">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel-modal" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn-submit-modal">
+                        <i class="fas fa-save"></i> Register TPO
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ============================================ -->
+<!-- ===== MODAL: ADD HOD (Updated - No Password) ===== -->
+<!-- ============================================ -->
+<div class="modal fade" id="addHodModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-tie" style="color:var(--green-primary);"></i> Add New HOD</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'admin_add_hod' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">User ID <span class="text-danger">*</span></label>
+                            <input type="text" name="user_id" class="form-control" placeholder="Enter user ID" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" name="full_name" class="form-control" placeholder="Enter full name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email address" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control" placeholder="Enter phone number">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <input type="text" name="department" class="form-control" placeholder="Enter department name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select name="is_active" class="form-control">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel-modal" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn-submit-modal">
+                        <i class="fas fa-save"></i> Register HOD
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ============================================ -->
+<!-- SCRIPTS                                      -->
+<!-- ============================================ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function toggleSidebarAdmin() {
+        document.getElementById('sidebarAdmin').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebarAdmin');
+        const toggle = document.querySelector('.sidebar-toggle-admin');
+        if (window.innerWidth <= 992) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const students = {{ total_students|default:0 }};
+        const faculty = {{ total_faculty|default:0 }};
+        const tpo = {{ total_tpo|default:0 }};
+        const hod = {{ total_hod|default:0 }};
+
+        // CHART 1: User Distribution (Pie Chart)
+        const ctx1 = document.getElementById('userDistributionChart');
+        if (ctx1) {
+            new Chart(ctx1, {
+                type: 'pie',
+                data: {
+                    labels: ['Students', 'Faculty', 'TPO', 'HOD'],
+                    datasets: [{
+                        data: [students, faculty, tpo, hod],
+                        backgroundColor: ['#4a6cf7', '#28a745', '#ff9f43', '#fd79a8'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // CHART 2: Role Distribution (Doughnut Chart)
+        const ctx2 = document.getElementById('roleDistributionChart');
+        if (ctx2) {
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Students', 'Faculty', 'TPO', 'HOD'],
+                    datasets: [{
+                        data: [students, faculty, tpo, hod],
+                        backgroundColor: ['#004d40', '#00695c', '#00897b', '#ffd93d'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // CHART 3: Monthly Growth (Line Chart)
+        const ctx3 = document.getElementById('monthlyGrowthChart');
+        if (ctx3) {
+            const monthlyData = {{ monthly_data|safe|default:'[]' }};
+            const finalMonthlyData = (monthlyData && monthlyData.length === 12) ? monthlyData : [0,0,0,0,0,0,0,0,0,0,0,0];
+            
+            new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Registrations',
+                        data: finalMonthlyData,
+                        backgroundColor: 'rgba(0, 77, 64, 0.1)',
+                        borderColor: '#004d40',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#004d40',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

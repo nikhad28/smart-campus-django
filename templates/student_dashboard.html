@@ -54,19 +54,6 @@
             margin-right: 8px;
         }
 
-        .navbar-custom .nav-link {
-            color: rgba(255, 255, 255, 0.85) !important;
-            font-weight: 500;
-            padding: 8px 18px;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-
-        .navbar-custom .nav-link:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: white !important;
-        }
-
         .btn-logout-nav {
             background: rgba(255, 107, 107, 0.2);
             color: #ff6b6b;
@@ -86,11 +73,127 @@
             box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
+        /* ============================================ */
+        /* ===== SIDEBAR ===== */
+        /* ============================================ */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 260px;
+            height: calc(100vh - 70px);
+            background: white;
+            border-right: 1px solid rgba(0, 77, 64, 0.06);
+            padding: 20px 16px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 10px; }
+
+        .sidebar .sidebar-brand {
+            font-weight: 700;
+            color: var(--green-dark);
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+            font-size: 1.1rem;
+        }
+        .sidebar .sidebar-brand i {
+            color: var(--green-primary);
+            margin-right: 8px;
+        }
+
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            color: #4a4a6a;
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 2px;
+        }
+
+        .sidebar .nav-item:hover {
+            background: rgba(0, 77, 64, 0.06);
+            color: var(--green-primary);
+        }
+
+        .sidebar .nav-item.active {
+            background: rgba(0, 77, 64, 0.08);
+            color: var(--green-primary);
+            border-left: 3px solid var(--green-primary);
+        }
+
+        .sidebar .nav-item i {
+            width: 22px;
+            color: var(--green-primary);
+        }
+
+        .sidebar .nav-item .badge-count {
+            margin-left: auto;
+            background: var(--green-primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+        }
+
+        .sidebar .nav-item .badge-red {
+            background: #dc3545;
+        }
+
+        /* ===== SIDEBAR TOGGLE (Mobile) ===== */
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 220px;
+            }
+        }
+
         /* ===== MAIN CONTENT ===== */
-        .dashboard-main {
-            padding-top: 100px;
+        .main-content {
+            margin-left: 260px;
+            padding-top: 90px;
             padding-bottom: 40px;
+            padding-left: 30px;
+            padding-right: 30px;
             min-height: 100vh;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                margin-left: 0;
+                padding: 80px 16px 30px;
+            }
         }
 
         /* ===== WELCOME CARD ===== */
@@ -100,7 +203,7 @@
             padding: 32px 36px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(0, 77, 64, 0.06);
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             position: relative;
             overflow: hidden;
         }
@@ -170,22 +273,10 @@
             color: white;
         }
 
-        .stat-card .icon.green {
-            background: linear-gradient(135deg, #004d40, #00897b);
-        }
-
-        .stat-card .icon.gold {
-            background: linear-gradient(135deg, #ffd93d, #f6b93b);
-            color: #00332a;
-        }
-
-        .stat-card .icon.blue {
-            background: linear-gradient(135deg, #4a6cf7, #6a3de8);
-        }
-
-        .stat-card .icon.pink {
-            background: linear-gradient(135deg, #fd79a8, #e84393);
-        }
+        .stat-card .icon.green { background: linear-gradient(135deg, #004d40, #00897b); }
+        .stat-card .icon.gold { background: linear-gradient(135deg, #ffd93d, #f6b93b); color: #00332a; }
+        .stat-card .icon.blue { background: linear-gradient(135deg, #4a6cf7, #6a3de8); }
+        .stat-card .icon.pink { background: linear-gradient(135deg, #fd79a8, #e84393); }
 
         .stat-card h5 {
             font-weight: 700;
@@ -207,40 +298,94 @@
             margin-top: 8px;
         }
 
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
+        /* ===== JOB CARDS ===== */
+        .job-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 77, 64, 0.06);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--green-primary);
+        }
+
+        .job-card .company-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--green-primary);
+        }
+
+        .job-card .job-title {
+            font-weight: 700;
+            color: #00332a;
+        }
+
+        .job-card .company-name {
+            color: #6c6c8a;
+            font-size: 0.9rem;
+        }
+
+        .job-card .job-meta {
+            font-size: 0.85rem;
+            color: #6c6c8a;
+        }
+
+        .job-card .job-meta i {
+            color: var(--green-primary);
+            width: 18px;
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #004d40, #00897b);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 77, 64, 0.3);
+            color: white;
+        }
+
+        .btn-applied {
+            background: #e8e0d8;
+            color: #6c6c8a;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+            cursor: default;
+        }
+
         @media (max-width: 768px) {
-            .welcome-card {
-                padding: 24px 20px;
-                text-align: center;
-            }
-            .welcome-card .avatar {
-                margin: 0 auto 12px;
-            }
-            .stat-card {
-                padding: 20px 16px;
-            }
-            .stat-card .stat-number {
-                font-size: 1.8rem;
-            }
+            .welcome-card { padding: 24px 20px; text-align: center; }
+            .welcome-card .avatar { margin: 0 auto 12px; }
+            .stat-card { padding: 20px 16px; }
+            .stat-card .stat-number { font-size: 1.8rem; }
         }
 
         @media (max-width: 480px) {
-            .dashboard-main {
-                padding-top: 80px;
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-            .welcome-card {
-                padding: 20px 16px;
-            }
-            .welcome-card h2 {
-                font-size: 1.4rem;
-            }
-            .stat-card .stat-number {
-                font-size: 1.5rem;
-            }
+            .welcome-card { padding: 20px 16px; }
+            .welcome-card h2 { font-size: 1.4rem; }
+            .stat-card .stat-number { font-size: 1.5rem; }
+            .job-card { padding: 16px; }
         }
     </style>
 </head>
@@ -249,7 +394,10 @@
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="{% url 'student_dashboard' %}">
                 <i class="fas fa-university"></i> AIKTC Campus
             </a>
             <div class="d-flex align-items-center gap-3">
@@ -263,101 +411,262 @@
         </div>
     </nav>
 
-    <!-- ===== DASHBOARD ===== -->
-    <div class="dashboard-main">
-        <div class="container">
+    <!-- ============================================ -->
+    <!-- ===== SIDEBAR ===== -->
+    <!-- ============================================ -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-th-large"></i> Menu
+        </div>
 
-            <!-- Welcome Card -->
-            <div class="welcome-card">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <div class="d-flex align-items-center gap-4">
-                            <div class="avatar">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
-                            <div>
-                                <h2 class="fw-bold mb-0" style="color:#00332a;">
-                                    Welcome, <span style="color:#004d40;">{{ student_name }}</span>! 🎉
-                                </h2>
-                                <div class="user-details mt-2">
-                                    <div><i class="fas fa-whatsapp"></i> {{ whatsapp_no }}</div>
-                                    <div><i class="fas fa-id-card"></i> Student ID: {{ student_id|default:"N/A" }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <span class="badge" style="background:#004d40; color:white; padding:8px 20px; border-radius:50px; font-size:0.85rem;">
-                            <i class="fas fa-check-circle"></i> Active
-                        </span>
-                    </div>
-                </div>
-            </div>
+        <!-- 1. Dashboard -->
+        <a href="{% url 'student_dashboard' %}" class="nav-item active">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
 
-            <!-- Stats Grid -->
-            <div class="row g-4">
-                <!-- My Courses -->
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="icon blue">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <h5>My Courses</h5>
-                        <p>View enrolled courses</p>
-                        <span class="stat-number">6</span>
-                    </div>
-                </div>
+        <!-- 2. My Courses -->
+       <a href="{% url 'student_my_courses' %}" class="nav-item"><i class="fas fa-book"></i> My Courses</a>
 
-                <!-- Attendance -->
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="icon green">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <h5>Attendance</h5>
-                        <p>Current attendance</p>
-                        <span class="stat-number">85%</span>
-                    </div>
-                </div>
 
-                <!-- Results -->
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="icon gold">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <h5>Results</h5>
-                        <p>View grades &amp; CGPA</p>
-                        <span class="stat-number">8.2</span>
-                    </div>
-                </div>
-            </div>
+        <!-- 3. Attendance -->
+        <a href="#" class="nav-item">
+            <i class="fas fa-calendar-alt"></i> Attendance
+            <span class="badge-count">85%</span>
+        </a>
 
-            <!-- Quick Actions -->
-            <div class="row g-4 mt-3">
-                <div class="col-md-6">
-                    <div class="stat-card" style="border-left: 4px solid #004d40; text-align:left; padding:20px 24px;">
-                        <h5><i class="fas fa-calendar-check" style="color:#004d40;"></i> Upcoming Events</h5>
-                        <p style="font-size:0.9rem; color:#6c6c8a; margin-top:8px;">
-                            <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Bonhomie 2026 — Dec 15<br>
-                            <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Algorithm Hackathon — Jan 10
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="stat-card" style="border-left: 4px solid #ffd93d; text-align:left; padding:20px 24px;">
-                        <h5><i class="fas fa-bullhorn" style="color:#ffd93d;"></i> Notifications</h5>
-                        <p style="font-size:0.9rem; color:#6c6c8a; margin-top:8px;">
-                            <i class="fas fa-circle" style="color:#ffd93d; font-size:0.5rem;"></i> Exam schedule released<br>
-                            <i class="fas fa-circle" style="color:#ffd93d; font-size:0.5rem;"></i> Placement drive on Jan 20
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <!-- 4. Results -->
+      <a href="{% url 'student_results' %}" class="nav-item"><i class="fas fa-graduation-cap"></i> Results</a>
 
+        <!-- 5. Apply for Jobs -->
+        <a href="#jobs" class="nav-item">
+            <i class="fas fa-briefcase"></i> Apply for Jobs
+            <span class="badge-count">{{ active_jobs|length }}</span>
+        </a>
+
+        <!-- 6. Report Issue (Infrastructure) -->
+        <a href="{% url 'report_issue' %}" class="nav-item" style="border-left: 3px solid #dc3545; background: rgba(220, 53, 69, 0.05);">
+            <i class="fas fa-tools" style="color:#dc3545;"></i> Report Issue
+            <span class="badge-count badge-red">New</span>
+        </a>
+
+        <!-- 7. Upcoming Events -->
+        <a href="#events" class="nav-item">
+            <i class="fas fa-calendar-check"></i> Upcoming Events
+            <span class="badge-count">2</span>
+        </a>
+
+        <!-- 8. Profile -->
+       <a href="{% url 'student_profile' %}" class="nav-item"><i class="fas fa-user"></i> Profile</a>
+ 
+ <!-- Career Recommendation Button -->
+       <a href="{% url 'career_recommendation' %}" class="nav-item" style="border-left: 3px solid #6c5ce7; background: rgba(108, 92, 231, 0.05);">
+    <i class="fas fa-rocket" style="color:#6c5ce7;"></i> Career Recommendation
+    <span class="badge-count" style="background:#6c5ce7;">New</span>
+</a>
+        <!-- Divider -->
+        <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+            <!-- 9. Logout -->
+            <a href="{% url 'student_logout' %}" class="nav-item" style="color:#dc3545;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </div>
     </div>
 
+    <!-- ============================================ -->
+    <!-- ===== MAIN CONTENT ===== -->
+    <!-- ============================================ -->
+    <div class="main-content" id="mainContent">
+
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="avatar"><i class="fas fa-user-graduate"></i></div>
+                        <div>
+                            <h2 class="fw-bold mb-0" style="color:#00332a;">
+                                Welcome, <span style="color:#004d40;">{{ student_name }}</span>! 🎉
+                            </h2>
+                            <div class="user-details mt-2">
+                                <div><i class="fas fa-whatsapp"></i> {{ whatsapp_no }}</div>
+                                <div><i class="fas fa-id-card"></i> Student ID: {{ student_id|default:"N/A" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <span class="badge" style="background:#004d40; color:white; padding:8px 20px; border-radius:50px; font-size:0.85rem;">
+                        <i class="fas fa-check-circle"></i> Active
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="icon blue"><i class="fas fa-book"></i></div>
+                    <h5>My Courses</h5>
+                    <p>View enrolled courses</p>
+                    <span class="stat-number">6</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="icon green"><i class="fas fa-calendar-alt"></i></div>
+                    <h5>Attendance</h5>
+                    <p>Current attendance</p>
+                    <span class="stat-number">85%</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="icon gold"><i class="fas fa-graduation-cap"></i></div>
+                    <h5>Results</h5>
+                    <p>View grades &amp; CGPA</p>
+                    <span class="stat-number">8.2</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobs Section -->
+        <div class="mt-5" id="jobs">
+            <h5 class="fw-bold mb-3"><i class="fas fa-briefcase" style="color:#004d40;"></i> Available Job Openings</h5>
+
+            {% if active_jobs %}
+                <div class="row g-4">
+                    {% for job in active_jobs %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="job-card">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div class="company-logo">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div>
+                                    <div class="job-title">{{ job.job_title }}</div>
+                                    <div class="company-name">
+                                        <i class="fas fa-building" style="font-size:0.7rem;"></i>
+                                        {% if job.company %}
+                                            {{ job.company.company_name }}
+                                        {% else %}
+                                            Company
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <div><i class="fas fa-map-marker-alt"></i> {{ job.location|default:"Location not specified" }}</div>
+                                <div><i class="fas fa-money-bill"></i> {{ job.salary_range|default:"Salary not specified" }}</div>
+                                <div><i class="fas fa-calendar-alt"></i> Deadline: {{ job.application_deadline|default:"No deadline" }}</div>
+                            </div>
+                            <div class="mt-3 d-flex justify-content-between align-items-center">
+                                {% if job.id in applied_job_ids %}
+                                    <span class="btn-applied"><i class="fas fa-check"></i> Applied</span>
+                                {% else %}
+                                    <a href="{% url 'student_apply_job' job.id %}" class="btn-apply">
+                                        <i class="fas fa-paper-plane"></i> Apply Now
+                                    </a>
+                                {% endif %}
+                                <small class="text-muted">{{ job.experience_required|default:"Freshers" }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5" style="background:white; border-radius:20px; border:2px dashed #e8e0d8;">
+                    <i class="fas fa-briefcase" style="font-size:3rem; color:#b0a8a0;"></i>
+                    <h5 class="mt-3" style="color:#6c6c8a;">No job openings available</h5>
+                    <p class="text-muted">Check back later for new opportunities!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- My Applications -->
+        <div class="mt-5">
+            <h5 class="fw-bold mb-3"><i class="fas fa-file-alt" style="color:#004d40;"></i> My Applications</h5>
+
+            {% if my_applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover bg-white rounded-3 overflow-hidden">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Status</th>
+                                <th>Applied On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in my_applications %}
+                            <tr>
+                                <td><strong>{{ app.job_title|default:"-" }}</strong></td>
+                                <td>{{ app.company_name|default:"-" }}</td>
+                                <td>
+                                    <span class="badge {% if app.status == 'applied' %}bg-info{% elif app.status == 'shortlisted' %}bg-warning{% elif app.status == 'selected' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ app.status|title }}
+                                    </span>
+                                </td>
+                                <td>{{ app.applied_at|slice:":10" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-3" style="background:white; border-radius:16px; border:1px solid #e8e0d8;">
+                    <p class="text-muted mb-0">You haven't applied to any jobs yet.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-4 mt-3" id="events">
+            <div class="col-md-6">
+                <div class="stat-card" style="border-left: 4px solid #004d40; text-align:left; padding:20px 24px;">
+                    <h5><i class="fas fa-calendar-check" style="color:#004d40;"></i> Upcoming Events</h5>
+                    <p style="font-size:0.9rem; color:#6c6c8a; margin-top:8px;">
+                        <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Bonhomie 2026 — Dec 15<br>
+                        <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Algorithm Hackathon — Jan 10
+                    </p>
+                    <a href="#" class="btn btn-sm" style="background:#004d40; color:white; margin-top:8px;">
+                        <i class="fas fa-arrow-right"></i> View All Events
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stat-card" style="border-left: 4px solid #ffd93d; text-align:left; padding:20px 24px;">
+                    <h5><i class="fas fa-bullhorn" style="color:#ffd93d;"></i> Notifications</h5>
+                    <p style="font-size:0.9rem; color:#6c6c8a; margin-top:8px;">
+                        <i class="fas fa-circle" style="color:#ffd93d; font-size:0.5rem;"></i> Exam schedule released<br>
+                        <i class="fas fa-circle" style="color:#ffd93d; font-size:0.5rem;"></i> Placement drive on Jan 20
+                    </p>
+                    <a href="#" class="btn btn-sm" style="background:#ffd93d; color:#00332a; margin-top:8px;">
+                        <i class="fas fa-arrow-right"></i> View All Notifications
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Close sidebar on outside click (mobile)
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 992) {
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

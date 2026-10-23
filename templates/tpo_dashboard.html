@@ -21,9 +21,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: #f5f0eb;
+            background: var(--cream);
             min-height: 100vh;
         }
+
+        /* ===== NAVBAR ===== */
         .navbar-custom {
             background: var(--green-dark) !important;
             padding: 12px 0;
@@ -57,104 +59,131 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
-        .dashboard-main { padding-top: 100px; padding-bottom: 40px; min-height: 100vh; }
-        .welcome-card {
-            background: white;
-            border-radius: 24px;
-            padding: 32px 36px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0, 77, 64, 0.06);
-            margin-bottom: 32px;
-            position: relative;
-            overflow: hidden;
-        }
-        .welcome-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 70px;
             left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #004d40, #00897b, #004d40);
+            width: 260px;
+            height: calc(100vh - 70px);
+            background: white;
+            border-right: 1px solid rgba(0, 77, 64, 0.06);
+            padding: 24px 16px;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 100;
         }
-        .welcome-card .avatar {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #004d40, #00897b);
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 10px; }
+        .sidebar .nav-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            box-shadow: 0 4px 20px rgba(0, 77, 64, 0.2);
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #4a4a6a;
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
         }
-        .welcome-card .user-details { color: #6c6c8a; font-size: 0.95rem; }
-        .welcome-card .user-details i { color: #004d40; width: 24px; }
+        .sidebar .nav-item:hover {
+            background: rgba(0, 77, 64, 0.06);
+            color: var(--green-primary);
+        }
+        .sidebar .nav-item.active {
+            background: rgba(0, 77, 64, 0.08);
+            color: var(--green-primary);
+            border-left: 3px solid var(--green-primary);
+        }
+        .sidebar .nav-item i { width: 22px; color: var(--green-primary); }
+        .sidebar .nav-item .badge-count {
+            margin-left: auto;
+            background: var(--green-primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            padding-top: 90px;
+            padding-bottom: 40px;
+            padding-left: 30px;
+            padding-right: 30px;
+            min-height: 100vh;
+        }
+
+        /* ===== STATS CARDS ===== */
         .stat-card {
             background: white;
             border-radius: 20px;
-            padding: 28px 24px;
-            text-align: center;
-            transition: var(--transition);
-            border: 1px solid rgba(0, 77, 64, 0.06);
+            padding: 24px 20px;
             box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 77, 64, 0.06);
+            transition: var(--transition);
             height: 100%;
-            position: relative;
-            overflow: hidden;
         }
         .stat-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-4px);
             box-shadow: var(--shadow-hover);
-            border-color: var(--green-primary);
         }
-        .stat-card .icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 12px;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             color: white;
         }
-        .stat-card .icon.green { background: linear-gradient(135deg, #004d40, #00897b); }
-        .stat-card .icon.gold { background: linear-gradient(135deg, #ffd93d, #f6b93b); color: #00332a; }
-        .stat-card .icon.blue { background: linear-gradient(135deg, #4a6cf7, #6a3de8); }
-        .stat-card .icon.pink { background: linear-gradient(135deg, #fd79a8, #e84393); }
-        .stat-card h5 { font-weight: 700; color: #00332a; margin-bottom: 4px; }
-        .stat-card p { color: #6c6c8a; font-size: 0.9rem; margin: 0; }
-        .stat-card .stat-number {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #004d40;
-            display: block;
-            margin-top: 8px;
+        .stat-card .stat-icon.green { background: linear-gradient(135deg, #004d40, #00897b); }
+        .stat-card .stat-icon.blue { background: linear-gradient(135deg, #4a6cf7, #6a3de8); }
+        .stat-card .stat-icon.gold { background: linear-gradient(135deg, #ffd93d, #f6b93b); color: #00332a; }
+        .stat-card .stat-icon.pink { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .stat-card .stat-number { font-size: 2rem; font-weight: 800; color: #00332a; }
+        .stat-card .stat-label { color: #6c6c8a; font-size: 0.9rem; }
+
+        /* ===== RESPONSIVE ===== */
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
-        @media (max-width: 768px) {
-            .welcome-card { padding: 24px 20px; text-align: center; }
-            .welcome-card .avatar { margin: 0 auto 12px; }
-            .stat-card { padding: 20px 16px; }
-            .stat-card .stat-number { font-size: 1.8rem; }
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 80px 16px 30px; }
+            .sidebar-toggle { display: block; }
+            .stat-card .stat-number { font-size: 1.5rem; }
         }
-        @media (max-width: 480px) {
-            .dashboard-main { padding-top: 80px; padding-left: 12px; padding-right: 12px; }
-            .welcome-card { padding: 20px 16px; }
-            .welcome-card h2 { font-size: 1.4rem; }
+        @media (max-width: 576px) {
+            .main-content { padding: 70px 10px 20px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- ===== NAVBAR ===== -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
-                <i class="fas fa-university"></i> AIKTC Campus
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="{% url 'tpo_dashboard' %}">
+                <i class="fas fa-university"></i> AIKTC TPO
             </a>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-white-50" style="font-size:0.9rem;">
-                    <i class="fas fa-briefcase"></i> TPO
+                    <i class="fas fa-briefcase"></i> {{ tpo_name }}
                 </span>
                 <a href="{% url 'tpo_logout' %}" class="btn-logout-nav">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -163,86 +192,189 @@
         </div>
     </nav>
 
-    <div class="dashboard-main">
-        <div class="container">
-            <div class="welcome-card">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <div class="d-flex align-items-center gap-4">
-                            <div class="avatar"><i class="fas fa-briefcase"></i></div>
-                            <div>
-                                <h2 class="fw-bold mb-0" style="color:#00332a;">
-                                    Welcome, <span style="color:#004d40;">{{ tpo_name }}</span>! 🎉
-                                </h2>
-                                <div class="user-details mt-2">
-                                    <div><i class="fas fa-id-card"></i> User ID: {{ tpo_user_id }}</div>
-                                    <div><i class="fas fa-building"></i> Department: {{ tpo_department }}</div>
+   <!-- ===== SIDEBAR ===== -->
+<div class="sidebar" id="sidebar">
+    <div class="nav-item active">
+        <i class="fas fa-th-large"></i> Dashboard
+    </div>
+    <a href="{% url 'tpo_add_company' %}" class="nav-item">
+        <i class="fas fa-building"></i> Add Company
+    </a>
+    <a href="{% url 'tpo_manage_companies' %}" class="nav-item">
+        <i class="fas fa-list"></i> Manage Companies
+    </a>
+    <a href="{% url 'tpo_add_job' %}" class="nav-item">
+        <i class="fas fa-plus-circle"></i> Add Vacancy
+    </a>
+    <a href="{% url 'tpo_manage_jobs' %}" class="nav-item">
+        <i class="fas fa-briefcase"></i> Manage Jobs
+        <span class="badge-count">{{ total_jobs }}</span>
+    </a>
+    <a href="{% url 'tpo_applications' %}" class="nav-item">
+        <i class="fas fa-users"></i> Applications
+        <span class="badge-count">{{ total_applications }}</span>
+    </a>
+    
+    <!-- ✅ Report Issue Button (New) -->
+    <a href="{% url 'report_issue' %}" class="nav-item" style="border-left: 3px solid #dc3545; background: rgba(220, 53, 69, 0.05); margin-top:4px;">
+        <i class="fas fa-tools" style="color:#dc3545;"></i> Report Issue
+    </a>
+    
+    <a href="#" class="nav-item">
+        <i class="fas fa-chart-bar"></i> Analytics
+    </a>
+    <a href="{% url 'tpo_profile' %}" class="nav-item">
+        <i class="fas fa-user"></i> Profile
+    </a>
+    <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+        <a href="{% url 'tpo_logout' %}" class="nav-item" style="color:#dc3545;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content">
+        <!-- Welcome -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold" style="color:#00332a;">Welcome, {{ tpo_name }}! 👋</h2>
+                <p class="text-muted">Training & Placement Officer Dashboard</p>
+            </div>
+            <div>
+                <span class="badge" style="background:#004d40; color:white; padding:8px 20px; border-radius:50px;">
+                    <i class="fas fa-check-circle"></i> Active
+                </span>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card d-flex align-items-center gap-3">
+                    <div class="stat-icon green"><i class="fas fa-building"></i></div>
+                    <div>
+                        <div class="stat-number">{{ total_companies }}</div>
+                        <div class="stat-label">Companies</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card d-flex align-items-center gap-3">
+                    <div class="stat-icon blue"><i class="fas fa-briefcase"></i></div>
+                    <div>
+                        <div class="stat-number">{{ total_jobs }}</div>
+                        <div class="stat-label">Total Jobs</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card d-flex align-items-center gap-3">
+                    <div class="stat-icon gold"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div class="stat-number">{{ active_jobs }}</div>
+                        <div class="stat-label">Active Vacancies</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card d-flex align-items-center gap-3">
+                    <div class="stat-icon pink"><i class="fas fa-users"></i></div>
+                    <div>
+                        <div class="stat-number">{{ total_applications }}</div>
+                        <div class="stat-label">Applications</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <a href="{% url 'tpo_add_company' %}" class="btn w-100" style="background:#004d40; color:white; padding:12px; border-radius:12px;">
+                    <i class="fas fa-plus"></i> Add Company
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'tpo_add_job' %}" class="btn w-100" style="background:#00897b; color:white; padding:12px; border-radius:12px;">
+                    <i class="fas fa-plus-circle"></i> Add Vacancy
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'tpo_manage_jobs' %}" class="btn w-100" style="background:#4a6cf7; color:white; padding:12px; border-radius:12px;">
+                    <i class="fas fa-edit"></i> Manage Jobs
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'tpo_applications' %}" class="btn w-100" style="background:#fd79a8; color:white; padding:12px; border-radius:12px;">
+                    <i class="fas fa-eye"></i> View Applications
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Jobs & Applications -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent fw-bold">📋 Recent Jobs</div>
+                    <div class="card-body">
+                        {% if recent_jobs %}
+                            {% for job in recent_jobs %}
+                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                                <div>
+                                    <div class="fw-bold">{{ job.job_title }}</div>
+                                    <small class="text-muted">{{ job.company_name|default:"Company" }}</small>
                                 </div>
+                                <span class="badge {% if job.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ job.is_active|yesno:"Active,Inactive" }}
+                                </span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                        <span class="badge" style="background:#004d40; color:white; padding:8px 20px; border-radius:50px; font-size:0.85rem;">
-                            <i class="fas fa-check-circle"></i> Active
-                        </span>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No jobs added yet.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="icon blue"><i class="fas fa-building"></i></div>
-                        <h5>Companies</h5>
-                        <p>Total registered companies</p>
-                        <span class="stat-number">12</span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="icon green"><i class="fas fa-users"></i></div>
-                        <h5>Placements</h5>
-                        <p>Students placed</p>
-                        <span class="stat-number">45</span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="stat-card">
-                        <div class="icon gold"><i class="fas fa-file-alt"></i></div>
-                        <h5>Applications</h5>
-                        <p>Total applications</p>
-                        <span class="stat-number">128</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row g-4 mt-3">
-                <div class="col-md-6">
-                    <div class="stat-card" style="border-left: 4px solid #004d40; text-align:left; padding:20px 24px;">
-                        <h5><i class="fas fa-calendar-check" style="color:#004d40;"></i> Upcoming Drives</h5>
-                        <p style="font-size:0.9rem; color:#6c6c8a; margin-top:8px;">
-                            <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Google — Dec 20<br>
-                            <i class="fas fa-circle" style="color:#004d40; font-size:0.5rem;"></i> Amazon — Jan 15
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="stat-card" style="border-left: 4px solid #ffd93d; text-align:left; padding:20px 24px;">
-                        <h5><i class="fas fa-bullhorn" style="color:#ffd93d;"></i> Quick Actions</h5>
-                        <div class="mt-2 d-flex flex-wrap gap-2">
-                            <a href="#" class="btn btn-sm" style="background:#004d40; color:white; border-radius:50px; padding:6px 16px;">
-                                <i class="fas fa-plus"></i> Add Company
-                            </a>
-                            <a href="#" class="btn btn-sm" style="background:#00897b; color:white; border-radius:50px; padding:6px 16px;">
-                                <i class="fas fa-file-export"></i> Report
-                            </a>
-                        </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent fw-bold">📩 Recent Applications</div>
+                    <div class="card-body">
+                        {% if recent_applications %}
+                            {% for app in recent_applications %}
+                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                                <div>
+                                    <div class="fw-bold">{{ app.student_name }}</div>
+                                    <small class="text-muted">{{ app.job_title|default:"Job" }}</small>
+                                </div>
+                                <span class="badge {% if app.status == 'applied' %}bg-info{% elif app.status == 'shortlisted' %}bg-warning{% elif app.status == 'selected' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ app.status|title }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No applications yet.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+        // Close sidebar on outside click (mobile)
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 992) {
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

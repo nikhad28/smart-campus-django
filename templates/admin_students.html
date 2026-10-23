@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Students - Admin{% endblock %}
+
+{% block content %}
+<style>
+    /* ============================================
+       ADMIN DASHBOARD STYLES
+       ============================================ */
+    :root {
+        --green-primary: #004d40;
+        --green-light: #00695c;
+        --green-dark: #00332a;
+        --green-gold: #ffd93d;
+        --white: #ffffff;
+        --cream: #f5f0eb;
+        --shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+        --shadow-hover: 0 16px 48px rgba(0, 77, 64, 0.2);
+        --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .sidebar-admin {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 70px);
+        background: white;
+        border-right: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 20px 16px;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-admin::-webkit-scrollbar { width: 4px; }
+    .sidebar-admin::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 10px; }
+
+    .sidebar-admin .sidebar-brand {
+        font-weight: 700;
+        color: var(--green-dark);
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+        font-size: 1.1rem;
+    }
+    .sidebar-admin .sidebar-brand i {
+        color: var(--green-primary);
+        margin-right: 8px;
+    }
+
+    .sidebar-admin .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #4a4a6a;
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 2px;
+    }
+
+    .sidebar-admin .nav-item:hover {
+        background: rgba(0, 77, 64, 0.06);
+        color: var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item.active {
+        background: rgba(0, 77, 64, 0.08);
+        color: var(--green-primary);
+        border-left: 3px solid var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item i {
+        width: 22px;
+        color: var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item .badge-count {
+        margin-left: auto;
+        background: var(--green-primary);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+    }
+
+    .sidebar-admin .nav-item .badge-red {
+        background: #dc3545;
+    }
+
+    .sidebar-toggle-admin {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .main-content-admin {
+        margin-left: 260px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 100vh;
+    }
+
+    .dashboard-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    .dashboard-card .card-header {
+        font-weight: 700;
+        padding: 16px 20px;
+        border: none;
+    }
+    .dashboard-card .card-body {
+        padding: 20px;
+    }
+
+    .quick-action-btn {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        background: white;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: block;
+        color: #4a4a6a;
+    }
+    .quick-action-btn:hover {
+        background: #f8f9fa;
+        border-color: #4a6cf7;
+        transform: translateX(5px);
+        color: #4a6cf7;
+    }
+    .quick-action-btn i {
+        margin-right: 8px;
+        color: #4a6cf7;
+    }
+
+    .table th {
+        font-weight: 600;
+        color: #1a1a2e;
+        border-bottom: 2px solid #e0e0e0;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .table .status-badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    .table .status-badge.active { background: #d4edda; color: #155724; }
+    .table .status-badge.inactive { background: #f8d7da; color: #721c24; }
+    .table .status-badge.pending { background: #fff3cd; color: #856404; }
+
+    @media (max-width: 992px) {
+        .sidebar-admin {
+            transform: translateX(-100%);
+        }
+        .sidebar-admin.open {
+            transform: translateX(0);
+        }
+        .sidebar-toggle-admin {
+            display: block;
+        }
+        .main-content-admin {
+            margin-left: 0;
+            padding: 16px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .sidebar-admin {
+            width: 220px;
+        }
+    }
+</style>
+
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle-admin" onclick="toggleSidebarAdmin()">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar-admin" id="sidebarAdmin">
+    <div class="sidebar-brand">
+        <i class="fas fa-th-large"></i> Menu
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}" class="nav-item">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="#" class="nav-item">
+        <i class="fas fa-users"></i> Users
+        <span class="badge-count">4</span>
+    </a>
+    <a href="{% url 'admin_students' %}" class="nav-item active">
+        <i class="fas fa-user-graduate"></i> Students
+        <span class="badge-count">{{ total_students|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_faculty' %}" class="nav-item">
+        <i class="fas fa-chalkboard-teacher"></i> Faculty
+        <span class="badge-count">{{ total_faculty|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_tpo' %}" class="nav-item">
+        <i class="fas fa-briefcase"></i> TPO
+        <span class="badge-count">{{ total_tpo|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_hod' %}" class="nav-item">
+        <i class="fas fa-user-tie"></i> HOD
+        <span class="badge-count">{{ total_hod|default:0 }}</span>
+    </a>
+    <a href="{% url 'issues_dashboard' %}" class="nav-item" style="border-left: 3px solid #dc3545; background: rgba(220, 53, 69, 0.05);">
+        <i class="fas fa-tools" style="color:#dc3545;"></i> All Issues
+        <span class="badge-count badge-red">{{ pending_count|default:0 }}</span>
+    </a>
+    <a href="#" class="nav-item">
+        <i class="fas fa-chart-bar"></i> Reports
+    </a>
+    <a href="#" class="nav-item">
+        <i class="fas fa-user"></i> Profile
+    </a>
+
+    <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+        <a href="{% url 'admin_logout' %}" class="nav-item" style="color:#dc3545;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content-admin" id="mainContentAdmin">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1"><i class="fas fa-user-graduate text-primary"></i> Manage Students</h3>
+            <p class="text-muted mb-0">View and manage all student records.</p>
+        </div>
+        <div>
+            <a href="#" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Add Student
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="card dashboard-card" style="border-left: 4px solid #4a6cf7;">
+                <div class="card-body text-center">
+                    <h3 class="text-primary mb-1">{{ total_students|default:0 }}</h3>
+                    <small class="text-muted">Total Students</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card dashboard-card" style="border-left: 4px solid #28a745;">
+                <div class="card-body text-center">
+                    <h3 class="text-success mb-1">{{ active_students|default:0 }}</h3>
+                    <small class="text-muted">Active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card dashboard-card" style="border-left: 4px solid #dc3545;">
+                <div class="card-body text-center">
+                    <h3 class="text-danger mb-1">{{ inactive_students|default:0 }}</h3>
+                    <small class="text-muted">Inactive</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card dashboard-card" style="border-left: 4px solid #ffc107;">
+                <div class="card-body text-center">
+                    <h3 class="text-warning mb-1">{{ pending_verification|default:0 }}</h3>
+                    <small class="text-muted">Pending Verification</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="card dashboard-card">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-list"></i> All Students</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>WhatsApp</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                            <th>Registered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><strong>{{ student.full_name|default:"N/A" }}</strong></td>
+                            <td>{{ student.whatsapp_no|default:"N/A" }}</td>
+                            <td>{{ student.email|default:"N/A" }}</td>
+                            <td>{{ student.department|default:"N/A" }}</td>
+                            <td>
+                                <span class="badge {% if student.gender == 'Male' %}bg-primary{% elif student.gender == 'Female' %}bg-pink{% else %}bg-secondary{% endif %}">
+                                    {{ student.gender|default:"N/A" }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge {% if student.is_active %}active{% else %}inactive{% endif %}">
+                                    {{ student.is_active|yesno:"Active,Inactive" }}
+                                </span>
+                            </td>
+                            <td>{{ student.created_at|date:"d M Y"|default:"N/A" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="#" class="btn btn-outline-primary"><i class="fas fa-edit"></i></a>
+                                    <a href="#" class="btn btn-outline-danger"><i class="fas fa-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                <i class="fas fa-user-graduate fa-2x d-block mb-2 opacity-25"></i>
+                                No students registered yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleSidebarAdmin() {
+        document.getElementById('sidebarAdmin').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebarAdmin');
+        const toggle = document.querySelector('.sidebar-toggle-admin');
+        if (window.innerWidth <= 992) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
+    });
+</script>
+{% endblock %}

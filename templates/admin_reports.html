@@ -1,0 +1,726 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reports - AIKTC{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --green-primary: #004d40;
+        --green-light: #00695c;
+        --green-dark: #00332a;
+        --green-gold: #ffd93d;
+        --white: #ffffff;
+        --cream: #f5f0eb;
+        --shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+        --shadow-hover: 0 16px 48px rgba(0, 77, 64, 0.2);
+        --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .sidebar-admin {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 72px);
+        background: white;
+        border-right: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 20px 16px;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-admin::-webkit-scrollbar { width: 4px; }
+    .sidebar-admin::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 10px; }
+
+    .sidebar-admin .sidebar-brand {
+        font-weight: 700;
+        color: var(--green-dark);
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+        font-size: 1.1rem;
+    }
+    .sidebar-admin .sidebar-brand i {
+        color: var(--green-primary);
+        margin-right: 8px;
+    }
+
+    .sidebar-admin .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #4a4a6a;
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 2px;
+    }
+
+    .sidebar-admin .nav-item:hover {
+        background: rgba(0, 77, 64, 0.06);
+        color: var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item.active {
+        background: rgba(0, 77, 64, 0.08);
+        color: var(--green-primary);
+        border-left: 3px solid var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item i {
+        width: 22px;
+        color: var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item .badge-count {
+        margin-left: auto;
+        background: var(--green-primary);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+    }
+
+    .sidebar-admin .nav-item .badge-red {
+        background: #dc3545;
+    }
+
+    .sidebar-toggle-admin {
+        display: none;
+        background: none;
+        border: none;
+        color: #004d40;
+        font-size: 1.5rem;
+        cursor: pointer;
+        position: fixed;
+        top: 80px;
+        left: 10px;
+        z-index: 101;
+    }
+
+    .main-content-admin {
+        margin-left: 260px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 100vh;
+    }
+
+    .dashboard-card {
+        transition: var(--transition);
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        background: white;
+        height: 100%;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .dashboard-card .card-header {
+        font-weight: 700;
+        padding: 16px 20px;
+        border: none;
+        background: transparent;
+    }
+
+    .dashboard-card .card-body {
+        padding: 20px;
+    }
+
+    .stats-grid-admin {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card-admin {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 77, 64, 0.06);
+        text-align: center;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card-admin::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--green-primary), var(--green-gold));
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .stat-card-admin:hover::after {
+        transform: scaleX(1);
+    }
+
+    .stat-card-admin:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .stat-card-admin .number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        letter-spacing: -1px;
+    }
+
+    .stat-card-admin .label {
+        font-size: 0.85rem;
+        color: #6c6c8a;
+        font-weight: 500;
+    }
+
+    .stat-card-admin .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 6px;
+    }
+
+    .stat-card-admin .stat-icon.green { color: var(--green-primary); }
+    .stat-card-admin .stat-icon.blue { color: #4a6cf7; }
+    .stat-card-admin .stat-icon.gold { color: var(--green-gold); }
+    .stat-card-admin .stat-icon.pink { color: #fd79a8; }
+    .stat-card-admin .stat-icon.orange { color: #ff9f43; }
+    .stat-card-admin .stat-icon.purple { color: #6c5ce7; }
+    .stat-card-admin .stat-icon.red { color: #dc3545; }
+
+    .chart-container {
+        position: relative;
+        height: 280px;
+        width: 100%;
+    }
+
+    .chart-card {
+        transition: var(--transition);
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        background: white;
+        height: 100%;
+    }
+
+    .chart-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .chart-card .card-header {
+        font-weight: 700;
+        padding: 16px 20px;
+        border: none;
+        background: transparent;
+    }
+
+    .chart-card .card-body {
+        padding: 20px;
+    }
+
+    @media (max-width: 992px) {
+        .sidebar-admin {
+            transform: translateX(-100%);
+            top: 70px;
+            height: calc(100vh - 70px);
+            width: 280px;
+        }
+        .sidebar-admin.open {
+            transform: translateX(0);
+        }
+        .sidebar-toggle-admin {
+            display: block;
+        }
+        .main-content-admin {
+            margin-left: 0;
+            padding: 16px;
+            padding-top: 60px;
+        }
+        .chart-container {
+            height: 220px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .sidebar-admin {
+            width: 220px;
+        }
+        .stats-grid-admin {
+            grid-template-columns: 1fr 1fr;
+        }
+        .stat-card-admin .number {
+            font-size: 1.6rem;
+        }
+        .chart-container {
+            height: 180px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle-admin" onclick="toggleSidebarAdmin()">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar-admin" id="sidebarAdmin">
+    <div class="sidebar-brand">
+        <i class="fas fa-th-large"></i> Menu
+    </div>
+
+    <a href="{% url 'admin_dashboard' %}" class="nav-item">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="{% url 'admin_users' %}" class="nav-item">
+        <i class="fas fa-users"></i> Users
+        <span class="badge-count">{{ total_users|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_students' %}" class="nav-item">
+        <i class="fas fa-user-graduate"></i> Students
+        <span class="badge-count">{{ total_students|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_faculty' %}" class="nav-item">
+        <i class="fas fa-chalkboard-teacher"></i> Faculty
+        <span class="badge-count">{{ total_faculty|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_hod' %}" class="nav-item">
+        <i class="fas fa-user-tie"></i> HOD
+        <span class="badge-count">{{ total_hod|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_tpo' %}" class="nav-item">
+        <i class="fas fa-briefcase"></i> TPO
+        <span class="badge-count">{{ total_tpo|default:0 }}</span>
+    </a>
+    <a href="{% url 'issues_dashboard' %}" class="nav-item" style="border-left: 3px solid #dc3545; background: rgba(220, 53, 69, 0.05);">
+        <i class="fas fa-tools" style="color:#dc3545;"></i> All Issues
+        <span class="badge-count badge-red">{{ pending_count|default:0 }}</span>
+    </a>
+    <a href="{% url 'admin_reports' %}" class="nav-item active">
+        <i class="fas fa-chart-bar"></i> Reports
+    </a>
+    <a href="{% url 'admin_profile' %}" class="nav-item">
+        <i class="fas fa-user"></i> Profile
+    </a>
+
+    <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+        <a href="{% url 'admin_logout' %}" class="nav-item" style="color:#dc3545;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content-admin" id="mainContentAdmin">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1" style="color:var(--green-dark);">
+                <i class="fas fa-chart-bar" style="color:var(--green-primary);"></i> Reports & Analytics
+            </h3>
+            <p class="text-muted mb-0">View system statistics and analytics.</p>
+        </div>
+        <div>
+            <span class="badge p-2 px-3 rounded-pill" style="background: var(--green-primary); color: white;">
+                <i class="fas fa-chart-line"></i> Analytics
+            </span>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid-admin">
+        <div class="stat-card-admin">
+            <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+            <div class="number">{{ total_users|default:0 }}</div>
+            <div class="label">Total Users</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon green"><i class="fas fa-user-graduate"></i></div>
+            <div class="number">{{ total_students|default:0 }}</div>
+            <div class="label">Students</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon gold"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="number">{{ total_faculty|default:0 }}</div>
+            <div class="label">Faculty</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon orange"><i class="fas fa-briefcase"></i></div>
+            <div class="number">{{ total_tpo|default:0 }}</div>
+            <div class="label">TPO</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon pink"><i class="fas fa-user-tie"></i></div>
+            <div class="number">{{ total_hod|default:0 }}</div>
+            <div class="label">HOD</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon red"><i class="fas fa-tools"></i></div>
+            <div class="number">{{ pending_count|default:0 }}</div>
+            <div class="label">Pending Issues</div>
+        </div>
+    </div>
+
+    <!-- CHARTS ROW 1 -->
+    <div class="row g-4">
+        <!-- Pie Chart - User Distribution -->
+        <div class="col-md-6">
+            <div class="chart-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie" style="color: var(--green-primary);"></i>
+                    <span class="ms-2">User Distribution</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="userDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Scatter Plot - Gender Distribution -->
+<div class="col-md-6">
+    <div class="chart-card">
+        <div class="card-header">
+            <i class="fas fa-venus-mars" style="color: var(--green-primary);"></i>
+            <span class="ms-2">Gender Distribution (Scatter)</span>
+        </div>
+        <div class="card-body">
+            <div class="chart-container">
+                <canvas id="genderScatterChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Line Chart - Monthly Registrations -->
+        <div class="col-md-6">
+            <div class="chart-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line" style="color: var(--green-primary);"></i>
+                    <span class="ms-2">Monthly Registrations</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="monthlyGrowthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHARTS ROW 3 - Role Distribution Full Width -->
+    <div class="row g-4 mt-2">
+        <div class="col-md-12">
+            <div class="chart-card">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie" style="color: var(--green-primary);"></i>
+                    <span class="ms-2">Role Distribution (Doughnut)</span>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 280px;">
+                        <canvas id="roleDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================ -->
+<!-- SCRIPTS                                      -->
+<!-- ============================================ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function toggleSidebarAdmin() {
+        document.getElementById('sidebarAdmin').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebarAdmin');
+        const toggle = document.querySelector('.sidebar-toggle-admin');
+        if (window.innerWidth <= 992) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // ============================================
+        // DATA
+        // ============================================
+        const students = {{ total_students|default:0 }};
+        const faculty = {{ total_faculty|default:0 }};
+        const tpo = {{ total_tpo|default:0 }};
+        const hod = {{ total_hod|default:0 }};
+        const activeStudents = {{ active_students|default:0 }};
+        const inactiveStudents = {{ inactive_students|default:0 }};
+
+        // ============================================
+        // CHART 1: User Distribution (Pie Chart)
+        // ============================================
+        const ctx1 = document.getElementById('userDistributionChart');
+        if (ctx1) {
+            new Chart(ctx1, {
+                type: 'pie',
+                data: {
+                    labels: ['Students', 'Faculty', 'TPO', 'HOD'],
+                    datasets: [{
+                        data: [students, faculty, tpo, hod],
+                        backgroundColor: ['#4a6cf7', '#28a745', '#ff9f43', '#fd79a8'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 16, usePointStyle: true }
+                        }
+                    }
+                }
+            });
+        }
+
+       // ============================================
+// CHART 2: Gender Distribution (Scatter Plot)
+// ============================================
+const ctx2 = document.getElementById('genderScatterChart');
+if (ctx2) {
+    const maleCount = {{ male_students|default:0 }};
+    const femaleCount = {{ female_students|default:0 }};
+    const otherCount = {{ other_students|default:0 }};
+    
+    // Generate scatter points for each gender
+    const malePoints = [];
+    const femalePoints = [];
+    const otherPoints = [];
+    
+    // Male points (x=1, y=1 to maleCount)
+    for (let i = 1; i <= maleCount; i++) {
+        malePoints.push({x: 1, y: i});
+    }
+    
+    // Female points (x=2, y=1 to femaleCount)
+    for (let i = 1; i <= femaleCount; i++) {
+        femalePoints.push({x: 2, y: i});
+    }
+    
+    // Other points (x=3, y=1 to otherCount)
+    for (let i = 1; i <= otherCount; i++) {
+        otherPoints.push({x: 3, y: i});
+    }
+    
+    new Chart(ctx2, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Male',
+                data: malePoints,
+                backgroundColor: '#4a6cf7',
+                pointRadius: 6,
+                pointHoverRadius: 10
+            }, {
+                label: 'Female',
+                data: femalePoints,
+                backgroundColor: '#fd79a8',
+                pointRadius: 6,
+                pointHoverRadius: 10
+            }, {
+                label: 'Other',
+                data: otherPoints,
+                backgroundColor: '#6c5ce7',
+                pointRadius: 6,
+                pointHoverRadius: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 16, usePointStyle: true }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.parsed.y}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    min: 0,
+                    max: 4,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            const labels = ['', 'Male', 'Female', 'Other'];
+                            return labels[value] || '';
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Gender'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Student Count'
+                    },
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+        // ============================================
+        // CHART 3: Department-wise Students (Bar Chart)
+        // ============================================
+        const ctx3 = document.getElementById('departmentChart');
+        if (ctx3) {
+            const deptData = {{ dept_wise_data|safe|default:'[]' }};
+            const finalDeptData = (deptData && deptData.length === 8) ? deptData : [0,0,0,0,0,0,0,0];
+            
+            new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ['Comp Engg', 'Civil', 'Mech', 'AI & ML', 'Data Sci', 'Robotics', 'Electronics', 'IT'],
+                    datasets: [{
+                        label: 'Students',
+                        data: finalDeptData,
+                        backgroundColor: [
+                            '#4a6cf7', '#28a745', '#ff9f43', 
+                            '#fd79a8', '#6c5ce7', '#00b894',
+                            '#0984e3', '#fdcb6e'
+                        ],
+                        borderRadius: 8,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // CHART 4: Monthly Growth (Line Chart)
+        // ============================================
+        const ctx4 = document.getElementById('monthlyGrowthChart');
+        if (ctx4) {
+            const monthlyData = {{ monthly_data|safe|default:'[]' }};
+            const finalMonthlyData = (monthlyData && monthlyData.length === 12) ? monthlyData : [0,0,0,0,0,0,0,0,0,0,0,0];
+            
+            new Chart(ctx4, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Registrations',
+                        data: finalMonthlyData,
+                        backgroundColor: 'rgba(0, 77, 64, 0.1)',
+                        borderColor: '#004d40',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#004d40',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // CHART 5: Role Distribution (Doughnut Chart)
+        // ============================================
+        const ctx5 = document.getElementById('roleDistributionChart');
+        if (ctx5) {
+            new Chart(ctx5, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Students', 'Faculty', 'TPO', 'HOD'],
+                    datasets: [{
+                        data: [students, faculty, tpo, hod],
+                        backgroundColor: ['#004d40', '#00695c', '#00897b', '#ffd93d'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 16, usePointStyle: true }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

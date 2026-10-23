@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Infrastructure Issues - Admin{% endblock %}
+
+{% block content %}
+<style>
+    /* ============================================
+       ADMIN DASHBOARD STYLES
+       ============================================ */
+    :root {
+        --green-primary: #004d40;
+        --green-light: #00695c;
+        --green-dark: #00332a;
+        --green-gold: #ffd93d;
+        --white: #ffffff;
+        --cream: #f5f0eb;
+        --shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+        --shadow-hover: 0 16px 48px rgba(0, 77, 64, 0.2);
+        --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .sidebar-admin {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 70px);
+        background: white;
+        border-right: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 20px 16px;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-admin::-webkit-scrollbar { width: 4px; }
+    .sidebar-admin::-webkit-scrollbar-thumb { background: var(--green-primary); border-radius: 10px; }
+
+    .sidebar-admin .sidebar-brand {
+        font-weight: 700;
+        color: var(--green-dark);
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+        font-size: 1.1rem;
+    }
+    .sidebar-admin .sidebar-brand i {
+        color: var(--green-primary);
+        margin-right: 8px;
+    }
+
+    .sidebar-admin .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #4a4a6a;
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 2px;
+    }
+
+    .sidebar-admin .nav-item:hover {
+        background: rgba(0, 77, 64, 0.06);
+        color: var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item.active {
+        background: rgba(0, 77, 64, 0.08);
+        color: var(--green-primary);
+        border-left: 3px solid var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item i {
+        width: 22px;
+        color: var(--green-primary);
+    }
+
+    .sidebar-admin .nav-item .badge-count {
+        margin-left: auto;
+        background: var(--green-primary);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+    }
+
+    .sidebar-admin .nav-item .badge-red {
+        background: #dc3545;
+    }
+
+    .sidebar-toggle-admin {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .main-content-admin {
+        margin-left: 260px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 100vh;
+    }
+
+    .dashboard-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    .dashboard-card .card-header {
+        font-weight: 700;
+        padding: 16px 20px;
+        border: none;
+    }
+    .dashboard-card .card-body {
+        padding: 20px;
+    }
+
+    .stats-grid-admin {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card-admin {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        border: 1px solid #f0f0f0;
+        text-align: center;
+        transition: var(--transition);
+    }
+    .stat-card-admin:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+    }
+    .stat-card-admin .number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1a1a2e;
+    }
+    .stat-card-admin .label {
+        font-size: 0.85rem;
+        color: #6c6c8a;
+    }
+    .stat-card-admin .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+    .stat-card-admin .stat-icon.green { color: #004d40; }
+    .stat-card-admin .stat-icon.blue { color: #4a6cf7; }
+    .stat-card-admin .stat-icon.gold { color: #ffd93d; }
+    .stat-card-admin .stat-icon.pink { color: #fd79a8; }
+    .stat-card-admin .stat-icon.orange { color: #ff9f43; }
+    .stat-card-admin .stat-icon.red { color: #dc3545; }
+
+    .table th {
+        font-weight: 600;
+        color: #1a1a2e;
+        border-bottom: 2px solid #e0e0e0;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    .status-badge.pending { background: #fff3cd; color: #856404; }
+    .status-badge.in_progress { background: #cce5ff; color: #004085; }
+    .status-badge.resolved { background: #d4edda; color: #155724; }
+
+    /* Image preview */
+    .issue-image-preview {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #eee;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .issue-image-preview:hover {
+        transform: scale(1.1);
+        border-color: #004d40;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    @media (max-width: 992px) {
+        .sidebar-admin {
+            transform: translateX(-100%);
+        }
+        .sidebar-admin.open {
+            transform: translateX(0);
+        }
+        .sidebar-toggle-admin {
+            display: block;
+        }
+        .main-content-admin {
+            margin-left: 0;
+            padding: 16px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .sidebar-admin {
+            width: 220px;
+        }
+        .stats-grid-admin {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle-admin" onclick="toggleSidebarAdmin()">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar-admin" id="sidebarAdmin">
+    <div class="sidebar-brand">
+        <i class="fas fa-th-large"></i> Menu
+    </div>
+
+    <a href="/admin-dashboard/" class="nav-item">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="/admin-users/" class="nav-item">
+        <i class="fas fa-users"></i> Users
+        <span class="badge-count">{{ total_users|default:0 }}</span>
+    </a>
+    <a href="/admin-students/" class="nav-item">
+        <i class="fas fa-user-graduate"></i> Students
+        <span class="badge-count">{{ total_students|default:0 }}</span>
+    </a>
+    <a href="/admin-faculty/" class="nav-item">
+        <i class="fas fa-chalkboard-teacher"></i> Faculty
+        <span class="badge-count">{{ total_faculty|default:0 }}</span>
+    </a>
+    <a href="/admin-tpo/" class="nav-item">
+        <i class="fas fa-briefcase"></i> TPO
+        <span class="badge-count">{{ total_tpo|default:0 }}</span>
+    </a>
+    <a href="/admin-hod/" class="nav-item">
+        <i class="fas fa-user-tie"></i> HOD
+        <span class="badge-count">{{ total_hod|default:0 }}</span>
+    </a>
+    <a href="/issues-dashboard/" class="nav-item active" style="border-left: 3px solid #dc3545; background: rgba(220, 53, 69, 0.05);">
+        <i class="fas fa-tools" style="color:#dc3545;"></i> All Issues
+        <span class="badge-count badge-red">{{ pending_count|default:0 }}</span>
+    </a>
+    <a href="/admin-reports/" class="nav-item">
+        <i class="fas fa-chart-bar"></i> Reports
+    </a>
+    <a href="/admin-profile/" class="nav-item">
+        <i class="fas fa-user"></i> Profile
+    </a>
+
+    <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+        <a href="/admin-logout/" class="nav-item" style="color:#dc3545;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content-admin" id="mainContentAdmin">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1"><i class="fas fa-tools text-danger"></i> Infrastructure Issues</h3>
+            <p class="text-muted mb-0">View and manage all reported infrastructure issues.</p>
+        </div>
+        <div>
+            <span class="badge bg-danger p-2 px-3 rounded-pill">
+                <i class="fas fa-clock"></i> {{ pending_count|default:0 }} Pending
+            </span>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid-admin">
+        <div class="stat-card-admin">
+            <div class="stat-icon gold"><i class="fas fa-clock"></i></div>
+            <div class="number">{{ pending_count|default:0 }}</div>
+            <div class="label">🟡 Pending</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon blue"><i class="fas fa-spinner"></i></div>
+            <div class="number">{{ in_progress_count|default:0 }}</div>
+            <div class="label">🔵 In Progress</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div class="number">{{ resolved_count|default:0 }}</div>
+            <div class="label">✅ Resolved</div>
+        </div>
+        <div class="stat-card-admin">
+            <div class="stat-icon red"><i class="fas fa-tools"></i></div>
+            <div class="number">{{ issues|length|default:0 }}</div>
+            <div class="label">📋 Total Issues</div>
+        </div>
+    </div>
+
+    <!-- Issues Table -->
+    <div class="card dashboard-card">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-list"></i> All Issues</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Location</th>
+                            <th>Reported By</th>
+                            <th>Photo</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                            {% if is_admin %}
+                            <th>Delete</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issues %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-dark">{{ issue.category|default:"N/A" }}</span>
+                            </td>
+                            <td>{{ issue.description|truncatechars:50|default:"N/A" }}</td>
+                            <td>
+                                <i class="fas fa-map-marker-alt text-danger"></i> 
+                                {{ issue.location|default:"N/A" }}
+                            </td>
+                            <td>
+                                <strong>{{ issue.reported_by|default:"N/A" }}</strong><br>
+                                <small class="text-muted">{{ issue.reported_by_email|default:"N/A" }}</small>
+                            </td>
+                            <td>
+                                {% if issue.image_url %}
+                                    <a href="{{ issue.image_url }}" target="_blank">
+                                        <img src="{{ issue.image_url }}" alt="Issue Photo" class="issue-image-preview" 
+                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-muted\'>Invalid URL</span>'">
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">No photo</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="status-badge {% if issue.status == 'pending' %}pending{% elif issue.status == 'in_progress' %}in_progress{% else %}resolved{% endif %}">
+                                    {{ issue.status|title|default:"N/A" }}
+                                </span>
+                            </td>
+                            <td>
+                                <form method="POST" action="{% url 'update_issue_status' issue.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <select name="status" class="form-select form-select-sm d-inline-block" style="width:auto;" onchange="this.form.submit()">
+                                        <option value="pending" {% if issue.status == 'pending' %}selected{% endif %}>Pending</option>
+                                        <option value="in_progress" {% if issue.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="resolved" {% if issue.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                                    </select>
+                                </form>
+                            </td>
+                            {% if is_admin %}
+                            <td>
+                                <form method="POST" action="{% url 'delete_issue' issue.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this issue?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="{% if is_admin %}8{% else %}7{% endif %}" class="text-center text-muted py-4">
+                                <i class="fas fa-tools fa-2x d-block mb-2 opacity-25"></i>
+                                No issues reported yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleSidebarAdmin() {
+        document.getElementById('sidebarAdmin').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebarAdmin');
+        const toggle = document.querySelector('.sidebar-toggle-admin');
+        if (window.innerWidth <= 992) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
+    });
+</script>
+{% endblock %}

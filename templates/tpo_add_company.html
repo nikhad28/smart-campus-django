@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-transparent">
+                    <h4><i class="fas fa-building"></i> Add Company</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Company Name *</label>
+                            <input type="text" name="company_name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Website</label>
+                            <input type="url" name="company_website" class="form-control" placeholder="https://example.com">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Industry</label>
+                            <input type="text" name="industry" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Description</label>
+                            <textarea name="description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Logo URL</label>
+                            <input type="url" name="logo_url" class="form-control" placeholder="https://example.com/logo.png">
+                        </div>
+                        <button type="submit" class="btn" style="background:#004d40; color:white; padding:10px 30px;">
+                            <i class="fas fa-save"></i> Add Company
+                        </button>
+                        <a href="{% url 'tpo_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

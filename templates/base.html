@@ -13,84 +13,112 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background: #f4f7fc;
+            background: #f5f0eb;
             min-height: 100vh;
         }
-        /* ===== NAVBAR ===== */
+
+        /* ============================================
+           NAVBAR - AIKTC THEME (DARK GREEN)
+           ============================================ */
         .navbar-custom {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
-            padding: 14px 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            border-bottom: 3px solid #4a6cf7;
+            background: #00332a !important;
+            padding: 12px 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+            border-bottom: 3px solid #ffd93d;
         }
+
         .navbar-custom .navbar-brand {
             font-weight: 800;
             font-size: 1.5rem;
+            color: white !important;
             letter-spacing: -0.5px;
+            text-decoration: none;
         }
         .navbar-custom .navbar-brand i {
-            color: #4a6cf7;
+            color: #ffd93d;
             margin-right: 8px;
         }
+        .navbar-custom .navbar-brand:hover {
+            color: white !important;
+        }
+
         .navbar-custom .nav-link {
-            color: rgba(255,255,255,0.8) !important;
+            color: rgba(255, 255, 255, 0.85) !important;
             font-weight: 500;
             padding: 8px 18px;
             border-radius: 8px;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
         .navbar-custom .nav-link:hover {
-            color: white !important;
-            background: rgba(74, 108, 247, 0.3);
+            background: rgba(255, 217, 61, 0.15);
+            color: #ffd93d !important;
         }
         .navbar-custom .nav-link.active {
-            color: white !important;
-            background: rgba(74, 108, 247, 0.4);
+            color: #ffd93d !important;
+            background: rgba(255, 217, 61, 0.12);
         }
+
         .navbar-custom .dropdown-menu {
-            background: #1a1a2e;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #00332a;
+            border: 1px solid rgba(255, 217, 61, 0.1);
         }
         .navbar-custom .dropdown-item {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
         }
         .navbar-custom .dropdown-item:hover {
-            background: rgba(74, 108, 247, 0.2);
-            color: white;
+            background: rgba(255, 217, 61, 0.15);
+            color: #ffd93d;
         }
+
         .navbar-custom .btn-logout {
-            background: rgba(255, 107, 107, 0.2);
-            color: #ff6b6b;
-            border: 1px solid rgba(255, 107, 107, 0.3);
+            background: rgba(255, 217, 61, 0.15);
+            color: #ffd93d;
+            border: 1px solid rgba(255, 217, 61, 0.3);
             padding: 6px 18px;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.9rem;
+            text-decoration: none;
         }
         .navbar-custom .btn-logout:hover {
-            background: #ff6b6b;
-            color: white;
+            background: #ffd93d;
+            color: #00332a;
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 217, 61, 0.3);
         }
+
+        .navbar-custom .btn-outline-light {
+            color: white !important;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .navbar-custom .btn-outline-light:hover {
+            background: #ffd93d;
+            border-color: #ffd93d;
+            color: #00332a !important;
+        }
+
         .user-badge {
             display: flex;
             align-items: center;
             gap: 10px;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 500;
         }
         .user-badge i {
             font-size: 1.2rem;
-            color: #4a6cf7;
+            color: #ffd93d;
         }
-        /* ===== ALERTS ===== */
+
+        /* ============================================
+           ALERTS - AIKTC THEME
+           ============================================ */
         .alert-custom {
             border-radius: 12px;
             padding: 14px 20px;
             border: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
         .alert-success {
             background: #e6f7ed;
@@ -107,13 +135,33 @@
             color: #0d47a1;
             border-left: 4px solid #17a2b8;
         }
-        /* ===== MAIN ===== */
+
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
         .main-container {
             padding: 24px 20px;
             max-width: 1400px;
             margin: 0 auto;
         }
-        /* ===== RESPONSIVE ===== */
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            background: #00332a;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 20px 0;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 217, 61, 0.08);
+        }
+        footer i {
+            color: #ffd93d;
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
             .navbar-custom .navbar-brand {
                 font-size: 1.2rem;
@@ -129,10 +177,21 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'admin_dashboard' %}">
+            <a class="navbar-brand" href="
+                {% if request.session.logged_in and request.session.user_role == 1 %}
+                    {% url 'admin_dashboard' %}
+                {% elif request.session.tpo_logged_in %}
+                    {% url 'tpo_dashboard' %}
+                {% elif request.session.student_logged_in %}
+                    {% url 'student_dashboard' %}
+                {% else %}
+                    {% url 'index' %}
+                {% endif %}
+            ">
                 <i class="fas fa-university"></i> Smart Campus
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -140,39 +199,104 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center gap-2">
-                    <!-- Admin Badge -->
+
+                    <!-- ===== ADMIN ===== -->
+                    {% if request.session.logged_in and request.session.user_role == 1 %}
                     <li class="nav-item">
                         <span class="user-badge">
                             <i class="fas fa-user-shield"></i>
-                            <span id="adminName">Admin</span>
+                            <span>{{ request.session.username|default:"Admin" }}</span>
                         </span>
                     </li>
-                    <!-- Dashboard -->
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'admin_dashboard' %}">
                             <i class="fas fa-th-large"></i> Dashboard
                         </a>
                     </li>
-                    <!-- Users Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-users"></i> Users
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'issues_dashboard' %}">
+                            <i class="fas fa-clipboard-list"></i> All Issues
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-graduate"></i> Students</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-chalkboard-teacher"></i> Faculty</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-tie"></i> HOD</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-briefcase"></i> TPO</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-plus"></i> Add New</a></li>
-                        </ul>
                     </li>
-                    <!-- Logout -->
                     <li class="nav-item">
                         <a href="{% url 'admin_logout' %}" class="btn-logout">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </a>
                     </li>
+
+                    <!-- ===== TPO (Report Issue Sidebar Mein) ===== -->
+                    {% elif request.session.tpo_logged_in %}
+                    <li class="nav-item">
+                        <span class="user-badge">
+                            <i class="fas fa-briefcase"></i>
+                            <span>{{ request.session.tpo_name|default:"TPO" }}</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'tpo_dashboard' %}">
+                            <i class="fas fa-th-large"></i> Dashboard
+                        </a>
+                    </li>
+                    <!-- ❌ Report Issue Hatao - Sidebar Mein Daalna Hai -->
+                    <li class="nav-item">
+                        <a href="{% url 'tpo_logout' %}" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+
+                    <!-- ===== STUDENT (Report Issue Sidebar Mein) ===== -->
+                    {% elif request.session.student_logged_in %}
+                    <li class="nav-item">
+                        <span class="user-badge">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>{{ request.session.student_name|default:"Student" }}</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'student_dashboard' %}">
+                            <i class="fas fa-th-large"></i> Dashboard
+                        </a>
+                    </li>
+                    <!-- ❌ Report Issue Hatao - Student Dashboard Mein Daalna Hai -->
+                    <li class="nav-item">
+                        <a href="{% url 'student_logout' %}" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+
+                    <!-- ===== FACULTY ===== -->
+                    {% elif request.session.faculty_logged_in %}
+                    <li class="nav-item">
+                        <span class="user-badge">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>{{ request.session.faculty_name|default:"Faculty" }}</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'faculty_dashboard' %}">
+                            <i class="fas fa-th-large"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'faculty_logout' %}" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+
+                    <!-- ===== DEFAULT (Not Logged In) ===== -->
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'admin_login' %}" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                    {% endif %}
+
                 </ul>
             </div>
         </div>
@@ -197,23 +321,32 @@
     </div>
 
     <!-- ===== FOOTER ===== -->
-    <footer class="text-center py-3 mt-4" style="border-top: 1px solid #e9ecef; color: #6c6c8a; font-size: 0.85rem;">
+    <footer class="text-center py-3 mt-4">
         <div class="container">
-            <i class="fas fa-heart text-danger"></i> Smart Campus Management System
+            <i class="fas fa-heart"></i> Smart Campus Management System
         </div>
     </footer>
 
     <!-- ===== SCRIPTS ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Update admin name from session or context
         document.addEventListener('DOMContentLoaded', function() {
-            const nameEl = document.getElementById('adminName');
+            const nameEl = document.querySelector('.user-badge span');
             if (nameEl) {
-                // Try to get from context variable
-                const adminUser = '{{ admin_name|default:"Admin" }}';
-                if (adminUser && adminUser !== '') {
-                    nameEl.textContent = adminUser;
+                {% if request.session.username %}
+                    const user = '{{ request.session.username }}';
+                {% elif request.session.tpo_name %}
+                    const user = '{{ request.session.tpo_name }}';
+                {% elif request.session.student_name %}
+                    const user = '{{ request.session.student_name }}';
+                {% elif request.session.faculty_name %}
+                    const user = '{{ request.session.faculty_name }}';
+                {% else %}
+                    const user = 'User';
+                {% endif %}
+                
+                if (user && user !== '') {
+                    nameEl.textContent = user;
                 }
             }
         });

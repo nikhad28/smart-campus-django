@@ -1,0 +1,530 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Report Issue - AIKTC{% endblock %}
+
+{% block content %}
+<style>
+    /* ============================================
+       STUDENT SIDEBAR
+       ============================================ */
+    .sidebar-student {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 72px);
+        background: white;
+        border-right: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 20px 16px;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-student::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar-student::-webkit-scrollbar-thumb {
+        background: #004d40;
+        border-radius: 10px;
+    }
+
+    .sidebar-student .sidebar-brand {
+        font-weight: 700;
+        color: #00332a;
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+        font-size: 1.1rem;
+    }
+
+    .sidebar-student .sidebar-brand i {
+        color: #004d40;
+        margin-right: 8px;
+    }
+
+    .sidebar-student .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #4a4a6a;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 2px;
+    }
+
+    .sidebar-student .nav-item:hover {
+        background: rgba(0, 77, 64, 0.06);
+        color: #004d40;
+    }
+
+    .sidebar-student .nav-item.active {
+        background: rgba(0, 77, 64, 0.08);
+        color: #004d40;
+        border-left: 3px solid #004d40;
+    }
+
+    .sidebar-student .nav-item i {
+        width: 22px;
+        color: #004d40;
+    }
+
+    .sidebar-student .nav-item .badge-count {
+        margin-left: auto;
+        background: #004d40;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+    }
+
+    .sidebar-toggle-student {
+        display: none;
+        background: none;
+        border: none;
+        color: #004d40;
+        font-size: 1.5rem;
+        cursor: pointer;
+        position: fixed;
+        top: 80px;
+        left: 10px;
+        z-index: 101;
+    }
+
+    .main-content-student {
+        margin-left: 260px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 100vh;
+    }
+
+    /* Report Issue Card */
+    .report-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .report-card .card-header {
+        background: linear-gradient(135deg, #004d40, #00695c);
+        color: white;
+        padding: 20px 24px;
+        border: none;
+    }
+
+    .report-card .card-header h4 {
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .report-card .card-header p {
+        margin: 0;
+        opacity: 0.8;
+        font-size: 0.95rem;
+    }
+
+    .report-card .card-body {
+        padding: 28px;
+    }
+
+    .report-card .form-control, .report-card .form-select {
+        border-radius: 12px;
+        padding: 12px 16px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+    .report-card .form-control:focus, .report-card .form-select:focus {
+        border-color: #004d40;
+        box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.1);
+    }
+
+    .report-card .form-label {
+        font-weight: 600;
+        color: #00332a;
+    }
+
+    .btn-report {
+        background: linear-gradient(135deg, #004d40, #00695c);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-report:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 77, 64, 0.25);
+        color: white;
+    }
+
+    .btn-camera {
+        background: #004d40;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-camera:hover {
+        background: #00695c;
+        color: white;
+    }
+
+    .btn-webcam {
+        background: #00695c;
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-webcam:hover {
+        background: #00897b;
+        color: white;
+    }
+
+    .preview-container {
+        display: none;
+        margin-top: 12px;
+    }
+
+    .preview-container img {
+        max-width: 200px;
+        border-radius: 12px;
+        border: 3px solid #004d40;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .sidebar-student {
+            transform: translateX(-100%);
+            top: 70px;
+            height: calc(100vh - 70px);
+            width: 280px;
+        }
+        .sidebar-student.open {
+            transform: translateX(0);
+        }
+        .sidebar-toggle-student {
+            display: block;
+        }
+        .main-content-student {
+            margin-left: 0;
+            padding: 16px;
+            padding-top: 60px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .sidebar-student {
+            width: 220px;
+        }
+        .report-card .card-body {
+            padding: 18px;
+        }
+        .preview-container img {
+            max-width: 150px;
+        }
+    }
+</style>
+
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle-student" onclick="toggleSidebarStudent()">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar-student" id="sidebarStudent">
+    <div class="sidebar-brand">
+        <i class="fas fa-th-large"></i> Menu
+    </div>
+    
+    <a href="{% url 'student_dashboard' %}" class="nav-item">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    
+    <a href="{% url 'student_my_courses' %}" class="nav-item">
+        <i class="fas fa-book"></i> My Courses
+    </a>
+     <!-- 3. Attendance -->
+        <a href="#" class="nav-item">
+            <i class="fas fa-calendar-alt"></i> Attendance
+            <span class="badge-count">85%</span>
+        </a>
+    
+    <a href="{% url 'student_results' %}" class="nav-item">
+        <i class="fas fa-graduation-cap"></i> Results
+    </a>
+    
+    <a href="{% url 'student_dashboard' %}" class="nav-item">
+        <i class="fas fa-briefcase"></i> Apply for Jobs
+    </a>
+    
+    <a href="{% url 'report_issue' %}" class="nav-item active" style="border-left:3px solid #dc3545; background:rgba(220,53,69,0.05);">
+        <i class="fas fa-tools" style="color:#dc3545;"></i> Report Issue
+    </a>
+    
+    <a href="#" class="nav-item">
+        <i class="fas fa-calendar-alt"></i> Upcoming Events
+    </a>
+    
+    <a href="{% url 'student_profile' %}" class="nav-item">
+        <i class="fas fa-user"></i> Profile
+    </a>
+    
+  
+ <!-- Career Recommendation Button -->
+       <a href="{% url 'career_recommendation' %}" class="nav-item" style="border-left: 3px solid #6c5ce7; background: rgba(108, 92, 231, 0.05);">
+    <i class="fas fa-rocket" style="color:#6c5ce7;"></i> Career Recommendation
+    <span class="badge-count" style="background:#6c5ce7;">New</span>
+</a>
+    <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+        <a href="{% url 'student_logout' %}" class="nav-item" style="color:#dc3545;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content-student">
+    <div class="container-fluid px-0">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="report-card card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-tools me-2"></i> Report Infrastructure Issue</h4>
+                        <p>Upload photo of damaged equipment so that workers can repair it.</p>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Your Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="reported_by" class="form-control" placeholder="Enter your name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" name="reported_by_email" class="form-control" placeholder="Enter your email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" name="reported_by_phone" class="form-control" placeholder="+91 98765 43210">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Category <span class="text-danger">*</span></label>
+                                <select name="category" class="form-select" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Educomp">📺 Educomp / Smart Board</option>
+                                    <option value="Projector">📽️ Projector</option>
+                                    <option value="Bench">🪑 Bench / Chair</option>
+                                    <option value="Fan">🌀 Fan</option>
+                                    <option value="AC">❄️ Air Conditioner</option>
+                                    <option value="Light">💡 Light</option>
+                                    <option value="Computer">💻 Computer / Lab</option>
+                                    <option value="Plumbing">🚰 Plumbing / Water</option>
+                                    <option value="Electrical">⚡ Electrical</option>
+                                    <option value="Other">🔧 Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Location <span class="text-danger">*</span></label>
+                                <input type="text" name="location" class="form-control" placeholder="Building, Room No., Floor" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Description <span class="text-danger">*</span></label>
+                                <textarea name="description" class="form-control" rows="4" placeholder="Describe the issue in detail..." required></textarea>
+                            </div>
+                            
+                            <!-- Photo Upload -->
+                            <div class="mb-3">
+                                <label class="form-label">📸 Upload Photo</label>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button type="button" class="btn-camera" onclick="openCameraMobile()">
+                                        <i class="fas fa-camera"></i> Camera
+                                    </button>
+                                    <button type="button" class="btn-webcam" onclick="openCameraLaptop()">
+                                        <i class="fas fa-video"></i> Webcam
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('galleryInput').click();">
+                                        <i class="fas fa-images"></i> Gallery
+                                    </button>
+                                    <input type="file" id="galleryInput" name="image" class="d-none" accept="image/*" onchange="previewImage(this)">
+                                    <input type="file" id="cameraInput" name="image" class="d-none" accept="image/*" capture="environment" onchange="previewImage(this)">
+                                </div>
+                                
+                                <!-- Image Preview -->
+                                <div class="preview-container" id="imagePreview">
+                                    <img id="previewImg" src="#" alt="Preview">
+                                    <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage()">
+                                        <i class="fas fa-times"></i> Remove
+                                    </button>
+                                </div>
+                                <small class="text-muted">📱 Mobile: Camera opens | 💻 Laptop: Webcam opens</small>
+                            </div>
+                            
+                            <button type="submit" class="btn-report">
+                                <i class="fas fa-paper-plane me-2"></i> Report Issue
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 📸 WEBCAM MODAL (Laptop)                      -->
+<!-- ============================================ -->
+<div class="modal fade" id="cameraModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📸 Take Photo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <video id="video" autoplay playsinline style="width:100%; border-radius:12px; background:#000;"></video>
+                <canvas id="canvas" style="display:none;"></canvas>
+                <button id="captureBtn" class="btn btn-primary mt-3" style="background:#004d40; color:white; width:100%;">
+                    <i class="fas fa-camera"></i> Capture Photo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // SIDEBAR TOGGLE
+    // ============================================
+    function toggleSidebarStudent() {
+        document.getElementById('sidebarStudent').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebarStudent');
+        const toggle = document.querySelector('.sidebar-toggle-student');
+        if (window.innerWidth <= 992) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
+    });
+
+    // ============================================
+    // MOBILE CAMERA
+    // ============================================
+    function openCameraMobile() {
+        document.getElementById('cameraInput').click();
+    }
+
+    // ============================================
+    // LAPTOP WEBCAM
+    // ============================================
+    let stream = null;
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+
+    function openCameraLaptop() {
+        const modal = new bootstrap.Modal(document.getElementById('cameraModal'));
+        modal.show();
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment' }
+            })
+            .then(function(mediaStream) {
+                stream = mediaStream;
+                video.srcObject = mediaStream;
+                video.play();
+            })
+            .catch(function(err) {
+                alert('❌ Camera access denied! Please allow camera permission and try again.');
+                console.log(err);
+            });
+        } else {
+            alert('❌ Your browser does not support camera access.');
+        }
+    }
+
+    document.getElementById('captureBtn').addEventListener('click', function() {
+        if (!video.videoWidth || !video.videoHeight) {
+            alert('Please wait for camera to start.');
+            return;
+        }
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+
+        canvas.toBlob(function(blob) {
+            const file = new File([blob], 'webcam_photo.jpg', { type: 'image/jpeg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById('galleryInput').files = dataTransfer.files;
+            previewImage(document.getElementById('galleryInput'));
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            bootstrap.Modal.getInstance(document.getElementById('cameraModal')).hide();
+        }, 'image/jpeg');
+    });
+
+    document.getElementById('cameraModal').addEventListener('hidden.bs.modal', function() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    // ============================================
+    // PREVIEW & REMOVE
+    // ============================================
+    function previewImage(input) {
+        const previewDiv = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewDiv.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removeImage() {
+        document.getElementById('cameraInput').value = '';
+        document.getElementById('galleryInput').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+</script>
+{% endblock %}

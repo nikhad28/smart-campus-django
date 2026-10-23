@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4><i class="fas fa-briefcase"></i> Manage Jobs</h4>
+        <a href="{% url 'tpo_add_job' %}" class="btn btn-sm" style="background:#004d40; color:white;">
+            <i class="fas fa-plus"></i> Add Vacancy
+        </a>
+    </div>
+
+    <!-- ✅ Messages Block HATAYA — base.html already handles messages -->
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Location</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td><strong>{{ job.company_name|default:"-" }}</strong></td>
+                    <td>{{ job.job_title }}</td>
+                    <td>{{ job.location|default:"-" }}</td>
+                    <td>{{ job.application_deadline|default:"-" }}</td>
+                    <td>
+                        <span class="badge {% if job.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                            {{ job.is_active|yesno:"Active,Inactive" }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'tpo_edit_job' job.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form method="POST" action="{% url 'tpo_delete_job' job.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this job?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center text-muted">No jobs added yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

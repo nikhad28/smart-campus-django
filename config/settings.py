@@ -18,8 +18,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',  # ✅ Our main app
-     'otp_app', 
+    'core',
+    'otp_app',
+    'infrastructure',
+    'skills',
 ]
 
 # ===== MIDDLEWARE =====
@@ -62,12 +64,22 @@ DATABASES = {
     }
 }
 
-# ===== STATIC & MEDIA =====
+# ============================================
+# STATIC & MEDIA FILES
+# ============================================
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# ✅ MEDIA SETTINGS (For local image upload)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ===== SUPABASE =====
+# ============================================
+# SUPABASE
+# ============================================
+
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')

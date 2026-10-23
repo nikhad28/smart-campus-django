@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apply for Job - AIKTC Campus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-primary: #004d40;
+            --green-light: #00695c;
+            --green-dark: #00332a;
+            --green-gold: #ffd93d;
+            --white: #ffffff;
+            --cream: #f5f0eb;
+            --shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            min-height: 100vh;
+        }
+        .navbar-custom {
+            background: var(--green-dark) !important;
+            padding: 12px 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 999;
+        }
+        .navbar-custom .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: white !important;
+            letter-spacing: -0.5px;
+        }
+        .navbar-custom .navbar-brand i { color: var(--green-gold); margin-right: 8px; }
+        .btn-back-nav {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .btn-back-nav:hover { background: rgba(255,255,255,0.2); color: white; }
+        .main-content { padding-top: 100px; padding-bottom: 40px; min-height: 100vh; }
+        .form-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 77, 64, 0.06);
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #004d40, #00897b, #004d40);
+        }
+        .form-card .job-title { font-size: 1.4rem; font-weight: 700; color: #00332a; }
+        .form-card .company-name { color: #6c6c8a; font-size: 1rem; }
+        .form-card .company-name i { color: var(--green-primary); }
+        .form-control-pink {
+            border: 2px solid #e8e0d8;
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: var(--transition);
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-control-pink:focus {
+            border-color: var(--green-primary);
+            box-shadow: 0 0 0 4px rgba(0, 77, 64, 0.06);
+            outline: none;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #004d40, #00897b);
+            color: white;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 77, 64, 0.3);
+        }
+        .btn-cancel {
+            background: #e8e0d8;
+            color: #4a4a6a;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        .btn-cancel:hover { background: #d5cdc5; }
+        .alert { border-radius: 12px; padding: 12px 16px; border: none; }
+        .alert-success { background: rgba(0, 77, 64, 0.06); color: #004d40; border-left: 4px solid #004d40; }
+        .alert-error { background: rgba(220, 53, 69, 0.06); color: #a93226; border-left: 4px solid #dc3545; }
+        .job-meta { font-size: 0.9rem; color: #6c6c8a; }
+        .job-meta i { color: var(--green-primary); width: 20px; }
+        @media (max-width: 768px) {
+            .form-card { padding: 24px 20px; }
+            .main-content { padding-top: 80px; padding-left: 12px; padding-right: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fas fa-university"></i> AIKTC Campus
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-white-50" style="font-size:0.9rem;">
+                    <i class="fas fa-user-graduate"></i> Apply
+                </span>
+                <a href="{% url 'student_dashboard' %}" class="btn-back-nav">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main-content">
+        <div class="container">
+            <div class="form-card">
+
+                <!-- Job Info -->
+                <div class="mb-4">
+                    <div class="job-title">{{ job.job_title }}</div>
+                    <div class="company-name">
+                        <i class="fas fa-building"></i>
+                        {% if job.company %}
+                            {{ job.company.company_name }}
+                        {% else %}
+                            Company
+                        {% endif %}
+                    </div>
+                    <div class="job-meta mt-2">
+                        <div><i class="fas fa-map-marker-alt"></i> {{ job.location|default:"Location not specified" }}</div>
+                        <div><i class="fas fa-money-bill"></i> {{ job.salary_range|default:"Salary not specified" }}</div>
+                        <div><i class="fas fa-calendar-alt"></i> Deadline: {{ job.application_deadline|default:"No deadline" }}</div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Application Form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <h5 class="fw-bold mb-3"><i class="fas fa-file-signature" style="color:#004d40;"></i> Application Details</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" name="full_name" class="form-control-pink" value="{{ student_name }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control-pink" value="{{ student_email }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Phone Number <span class="text-danger">*</span></label>
+                        <input type="text" name="phone" class="form-control-pink" value="{{ student_phone }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Resume Link (Google Drive / Dropbox)</label>
+                        <input type="url" name="resume_link" class="form-control-pink" placeholder="https://drive.google.com/your-resume">
+                        <small class="text-muted">Optional — you can also upload later</small>
+                    </div>
+
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i> Submit Application
+                        </button>
+                        <a href="{% url 'student_dashboard' %}" class="btn-cancel">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+
+                <div class="mt-3 text-muted small">
+                    <i class="fas fa-info-circle"></i> Your details will be shared with the TPO for this application.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

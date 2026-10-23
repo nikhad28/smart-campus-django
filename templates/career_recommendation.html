@@ -1,0 +1,756 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<style>
+    /* ============================================
+       STUDENT SIDEBAR
+       ============================================ */
+    .sidebar-student {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        width: 260px;
+        height: calc(100vh - 72px);
+        background: white;
+        border-right: 1px solid rgba(0, 77, 64, 0.06);
+        padding: 20px 16px;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .sidebar-student::-webkit-scrollbar { width: 4px; }
+    .sidebar-student::-webkit-scrollbar-thumb { background: #004d40; border-radius: 10px; }
+
+    .sidebar-student .sidebar-brand {
+        font-weight: 700;
+        color: #00332a;
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0, 77, 64, 0.06);
+        font-size: 1.1rem;
+    }
+
+    .sidebar-student .sidebar-brand i { color: #004d40; margin-right: 8px; }
+
+    .sidebar-student .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #4a4a6a;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 2px;
+    }
+
+    .sidebar-student .nav-item:hover {
+        background: rgba(0, 77, 64, 0.06);
+        color: #004d40;
+    }
+
+    .sidebar-student .nav-item.active {
+        background: rgba(0, 77, 64, 0.08);
+        color: #004d40;
+        border-left: 3px solid #004d40;
+    }
+
+    .sidebar-student .nav-item i { width: 22px; color: #004d40; }
+    .sidebar-student .nav-item .badge-count {
+        margin-left: auto;
+        background: #004d40;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+    }
+
+    .sidebar-toggle-student {
+        display: none;
+        background: none;
+        border: none;
+        color: #004d40;
+        font-size: 1.5rem;
+        cursor: pointer;
+        position: fixed;
+        top: 80px;
+        left: 10px;
+        z-index: 101;
+    }
+
+    .main-content-student {
+        margin-left: 260px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 100vh;
+    }
+
+    /* ============================================
+       CAREER RECOMMENDATION STYLES
+       ============================================ */
+    .page-header {
+        background: linear-gradient(135deg, #004d40, #00695c);
+        color: white;
+        padding: 25px 30px;
+        border-radius: 16px;
+        margin-bottom: 30px;
+    }
+
+    .page-header h3 {
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .page-header p {
+        margin: 5px 0 0;
+        opacity: 0.85;
+    }
+
+    /* Subject Cards */
+    .subject-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 12px;
+    }
+
+    .subject-item {
+        background: white;
+        border-radius: 12px;
+        padding: 14px 18px;
+        border: 1px solid rgba(0, 77, 64, 0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .subject-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 77, 64, 0.10);
+        border-color: #004d40;
+    }
+
+    .subject-item .subject-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .subject-item .subject-name {
+        font-weight: 600;
+        color: #00332a;
+        font-size: 0.95rem;
+    }
+
+    .subject-item .subject-meta {
+        font-size: 0.75rem;
+        color: #888;
+    }
+
+    .subject-item .marks-badge {
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 4px 16px;
+        border-radius: 50px;
+        min-width: 60px;
+        text-align: center;
+    }
+
+    .marks-high { background: #d4edda; color: #155724; }
+    .marks-medium { background: #fff3cd; color: #856404; }
+    .marks-low { background: #f8d7da; color: #721c24; }
+
+    /* Predict Button - Theme Colors */
+    .predict-btn {
+        background: linear-gradient(135deg, #004d40, #00695c);
+        color: white;
+        border: none;
+        padding: 18px 50px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.15rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        min-width: 300px;
+    }
+
+    .predict-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 40px rgba(0, 77, 64, 0.35);
+        color: white;
+    }
+
+    .predict-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Loading */
+    .loader-container {
+        display: none;
+        text-align: center;
+        padding: 50px 20px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        margin-top: 25px;
+    }
+
+    .loader-container.active {
+        display: block;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .loader {
+        width: 60px;
+        height: 60px;
+        border: 5px solid #e8e8e8;
+        border-top: 5px solid #004d40;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+        font-size: 1.1rem;
+        color: #00332a;
+        font-weight: 500;
+    }
+
+    .loader-dots::after {
+        content: '';
+        animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+        0% { content: ''; }
+        33% { content: '.'; }
+        66% { content: '..'; }
+        100% { content: '...'; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Result Section */
+    .result-container {
+        display: none;
+        animation: fadeIn 0.6s ease;
+        margin-top: 25px;
+    }
+
+    .result-container.active {
+        display: block;
+    }
+
+    /* Career Result Card */
+    .career-result-card {
+        background: linear-gradient(135deg, #004d40, #00695c);
+        color: white;
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .career-result-card .career-icon {
+        font-size: 4rem;
+        margin-bottom: 10px;
+    }
+
+    .career-result-card h2 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin: 5px 0;
+    }
+
+    .confidence-circle {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.10);
+        border: 5px solid #ffd93d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 15px auto;
+        font-size: 2.2rem;
+        font-weight: 700;
+    }
+
+    /* Domain Progress */
+    .domain-item {
+        background: white;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(0, 77, 64, 0.06);
+        transition: all 0.3s ease;
+    }
+
+    .domain-item:hover {
+        border-color: #004d40;
+    }
+
+    .domain-item .domain-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .domain-item .domain-name {
+        font-weight: 600;
+        color: #00332a;
+    }
+
+    .domain-item .domain-score {
+        font-weight: 700;
+        color: #004d40;
+    }
+
+    .domain-item .progress {
+        height: 6px;
+        border-radius: 10px;
+        background: #e9ecef;
+        margin-top: 6px;
+    }
+
+    .domain-item .progress-bar {
+        border-radius: 10px;
+        transition: width 1.2s ease;
+    }
+
+    /* Stats Cards */
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 15px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        border: 1px solid rgba(0, 77, 64, 0.06);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #004d40;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.8rem;
+        color: #888;
+        margin-top: 2px;
+    }
+
+    .stat-card .stat-icon {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+    }
+
+    /* Action Buttons */
+    .action-btn {
+        background: #004d40;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: #00695c;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .action-btn-outline {
+        background: transparent;
+        color: #004d40;
+        border: 2px solid #004d40;
+        padding: 12px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn-outline:hover {
+        background: #004d40;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .sidebar-student {
+            transform: translateX(-100%);
+            top: 70px;
+            height: calc(100vh - 70px);
+            width: 280px;
+        }
+        .sidebar-student.open { transform: translateX(0); }
+        .sidebar-toggle-student { display: block; }
+        .main-content-student {
+            margin-left: 0;
+            padding: 16px;
+            padding-top: 60px;
+        }
+        .subject-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        .stat-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .sidebar-student { width: 220px; }
+        .subject-grid {
+            grid-template-columns: 1fr;
+        }
+        .stat-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        .career-result-card {
+            padding: 20px;
+        }
+        .career-result-card h2 {
+            font-size: 1.6rem;
+        }
+        .confidence-circle {
+            width: 110px;
+            height: 110px;
+            font-size: 1.6rem;
+        }
+        .predict-btn {
+            min-width: 100%;
+            padding: 14px 30px;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<!-- SIDEBAR TOGGLE -->
+<button class="sidebar-toggle-student" onclick="toggleSidebarStudent()">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- SIDEBAR -->
+<div class="sidebar-student" id="sidebarStudent">
+    <div class="sidebar-brand"><i class="fas fa-th-large"></i> Menu</div>
+    <a href="{% url 'student_dashboard' %}" class="nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="{% url 'student_my_courses' %}" class="nav-item"><i class="fas fa-book"></i> My Courses</a>
+    <a href="{% url 'student_results' %}" class="nav-item"><i class="fas fa-graduation-cap"></i> Results</a>
+    <a href="{% url 'student_dashboard' %}" class="nav-item"><i class="fas fa-briefcase"></i> Apply for Jobs</a>
+    <a href="{% url 'report_issue' %}" class="nav-item" style="border-left:3px solid #dc3545; background:rgba(220,53,69,0.05);">
+        <i class="fas fa-tools" style="color:#dc3545;"></i> Report Issue
+    </a>
+    <a href="#" class="nav-item"><i class="fas fa-calendar-alt"></i> Upcoming Events</a>
+    <a href="{% url 'student_profile' %}" class="nav-item"><i class="fas fa-user"></i> Profile</a>
+    <a href="{% url 'career_recommendation' %}" class="nav-item active" style="border-left:3px solid #6c5ce7; background:rgba(108,92,231,0.08);">
+        <i class="fas fa-rocket" style="color:#6c5ce7;"></i> Career Recommendation
+        <span class="badge-count" style="background:#6c5ce7;">New</span>
+    </a>
+    <div style="border-top:1px solid #eee; margin-top:16px; padding-top:16px;">
+        <a href="{% url 'student_logout' %}" class="nav-item" style="color:#dc3545;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content-student">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h3><i class="fas fa-rocket me-2"></i> Career Recommendation</h3>
+                <p>Welcome, <strong>{{ student_name }}</strong>! Your marks will be analyzed to suggest the best career path.</p>
+            </div>
+            <span class="badge bg-light text-dark p-2 px-3 rounded-pill">
+                <i class="fas fa-user me-1"></i> ID: {{ student_id }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Subjects Section - Full Width -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-transparent" style="border-bottom: 2px solid #004d40;">
+            <h5 class="mb-0" style="color: #004d40;">
+                <i class="fas fa-list me-2"></i> Your Subjects & Marks
+                <span class="badge ms-2" style="background: #004d40; color: white;">{{ total_subjects }}</span>
+            </h5>
+        </div>
+        <div class="card-body" style="max-height: 450px; overflow-y: auto;">
+            <div class="subject-grid">
+                {% for subject in subject_marks %}
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <span class="subject-name">{{ subject.subject_name }}</span>
+                            <span class="subject-meta">
+                                {% if subject.subject_code %}{{ subject.subject_code }} • {% endif %}
+                                Sem {{ subject.examination_id }}
+                                {% if subject.domain and subject.domain != 'Uncategorized' %}
+                                    <span class="badge bg-light text-dark ms-1">{{ subject.domain|truncatechars:20 }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <span class="marks-badge marks-{% if subject.marks_obtained >= 75 %}high{% elif subject.marks_obtained >= 50 %}medium{% else %}low{% endif %}">
+                            {{ subject.marks_obtained|floatformat:1 }}%
+                        </span>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-4 text-muted col-12">
+                        <i class="fas fa-info-circle fa-2x mb-2 d-block"></i>
+                        No subjects found. Please contact admin.
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Predict Button - Center -->
+    <div class="text-center mb-4">
+        <button id="predictBtn" class="predict-btn" onclick="getPrediction()">
+            <i class="fas fa-rocket me-2"></i> Get Career Recommendation
+        </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loader-container" id="loaderContainer">
+        <div class="loader"></div>
+        <p class="loader-text">Analyzing your academic performance<span class="loader-dots"></span></p>
+        <p class="text-muted small">This may take a few seconds...</p>
+    </div>
+
+    <!-- Result -->
+    <div class="result-container" id="resultContainer">
+        <!-- Career Result -->
+        <div class="career-result-card" id="careerResult">
+            <div class="career-icon">🎯</div>
+            <h2 id="predictedCareer">Software Developer</h2>
+            <p class="mb-0 opacity-75">Best career match based on your skills</p>
+            <div class="confidence-circle" id="confidenceCircle">
+                <span id="confidenceText">92%</span>
+            </div>
+            <p class="mb-0">Match Confidence</p>
+        </div>
+
+        <!-- Top Domains -->
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3" style="color: #00332a;">
+                    <i class="fas fa-chart-pie me-2"></i> Your Top Domains
+                </h6>
+                <div id="topDomains"></div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="statCgpa">0.0</div>
+                <div class="stat-label">CGPA</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value" id="statAvg">0%</div>
+                <div class="stat-label">Avg Marks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value" id="statTotal">{{ total_subjects }}</div>
+                <div class="stat-label">Subjects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="statBest">-</div>
+                <div class="stat-label">Best Domain</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-3 mt-4 justify-content-center flex-wrap">
+            <button class="action-btn" onclick="window.print()">
+                <i class="fas fa-print me-2"></i> Print Results
+            </button>
+            <button class="action-btn-outline" onclick="resetPrediction()">
+                <i class="fas fa-redo me-2"></i> Try Again
+            </button>
+            <a href="{% url 'student_dashboard' %}" class="action-btn-outline" style="text-decoration: none;">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isPredicting = false;
+
+    function toggleSidebarStudent() {
+        document.getElementById('sidebarStudent').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebarStudent');
+        const toggle = document.querySelector('.sidebar-toggle-student');
+        if (window.innerWidth <= 992) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
+    });
+
+    function getPrediction() {
+        if (isPredicting) return;
+        isPredicting = true;
+
+        const predictBtn = document.getElementById('predictBtn');
+        const loader = document.getElementById('loaderContainer');
+        const result = document.getElementById('resultContainer');
+
+        predictBtn.disabled = true;
+        predictBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Analyzing...';
+        loader.classList.add('active');
+        result.classList.remove('active');
+
+        const studentId = {{ student_id }};
+
+        fetch('/get-career-prediction/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ student_id: studentId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayResults(data);
+            } else {
+                alert('Error: ' + (data.error || 'Something went wrong!'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error! Please try again.');
+        })
+        .finally(() => {
+            isPredicting = false;
+            predictBtn.disabled = false;
+            predictBtn.innerHTML = '<i class="fas fa-rocket me-2"></i> Get Career Recommendation';
+            loader.classList.remove('active');
+        });
+    }
+
+    function displayResults(data) {
+        const result = document.getElementById('resultContainer');
+
+        document.getElementById('predictedCareer').textContent = data.predicted_career;
+        document.getElementById('confidenceText').textContent = data.confidence + '%';
+
+        const circle = document.getElementById('confidenceCircle');
+        circle.style.borderColor = data.confidence >= 75 ? '#28a745' : data.confidence >= 50 ? '#ffc107' : '#dc3545';
+
+        document.getElementById('statCgpa').textContent = data.student_data.cgpa.toFixed(2);
+        document.getElementById('statAvg').textContent = data.student_data.avg_marks.toFixed(1) + '%';
+        document.getElementById('statTotal').textContent = data.student_data.total_subjects;
+
+        const container = document.getElementById('topDomains');
+        container.innerHTML = '';
+
+        if (data.top_domains && data.top_domains.length > 0) {
+            document.getElementById('statBest').textContent = data.top_domains[0].domain;
+
+            data.top_domains.forEach(item => {
+                const color = item.score >= 75 ? '#28a745' : item.score >= 50 ? '#ffc107' : '#dc3545';
+                const div = document.createElement('div');
+                div.className = 'domain-item';
+                div.innerHTML = `
+                    <div class="domain-header">
+                        <span class="domain-name">${item.domain}</span>
+                        <span class="domain-score">${item.score.toFixed(1)}%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 0%; background: ${color};" data-width="${Math.min(item.score, 100)}"></div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.domain-item .progress-bar').forEach(bar => {
+                    const width = parseFloat(bar.dataset.width);
+                    bar.style.width = width + '%';
+                });
+            }, 150);
+        } else {
+            container.innerHTML = '<p class="text-muted text-center">No domain data available</p>';
+            document.getElementById('statBest').textContent = 'N/A';
+        }
+
+        result.classList.add('active');
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetPrediction() {
+        document.getElementById('resultContainer').classList.remove('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('predictBtn').focus();
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const items = document.querySelectorAll('.subject-item');
+        items.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.3s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 80 + (index * 40));
+        });
+    });
+</script>
+{% endblock %}
